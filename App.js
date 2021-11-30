@@ -16,7 +16,11 @@ import { initializeApp } from "firebase/app";
 import { getDatabase } from "firebase/database";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { Logout } from "./tabs/Logout";
-import { Expenses } from "./tabs/Expenses";
+import { Expenses } from "./tabs/expenses/Expenses";
+import { Provider, useDispatch, useSelector } from "react-redux";
+import store from "./store/store";
+import { setUser } from "./store/slices/userSlice";
+import { AppNavigation } from "./tabs/AppNavigation";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC8f3ethZ1I0CRiJDPlK_JEE1ctuASqzdc",
@@ -30,50 +34,33 @@ const firebaseConfig = {
 
 // Initialize Firebase
 export const firebaseApp = initializeApp(firebaseConfig);
-export const database = getDatabase(firebaseApp, "https://financecontroll-902fa-default-rtdb.europe-west1.firebasedatabase.app");
-
-function HomeScreen({ navigation }) {
-  return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Button
-        onPress={() => navigation.navigate("Notifications")}
-        title="Go to notifications"
-      />
-    </View>
-  );
-}
-
-
+export const database = getDatabase(
+  firebaseApp,
+  "https://financecontroll-902fa-default-rtdb.europe-west1.firebasedatabase.app"
+);
 
 const Drawer = createDrawerNavigator();
 
 export default function App() {
-  const [isAuth, setIsAuth] = React.useState(false);
-  const [user,setUser] = React.useState(null);
+ /* const [isAuth, setIsAuth] = React.useState(false);
+  const [user1, setUser1] = React.useState(null);
+
+  const { user } = useSelector((state) => state.userReducer);
+  const dispatch = useDispatch();
 
   const auth = getAuth(firebaseApp);
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      console.log(user);
-      setIsAuth(true);
-      const uid = user.uid;
-      setUser(user)
+      dispatch(setUser(user));
       // ...
     } else {
-      setIsAuth(false);
+      dispatch(setUser(null));
     }
-  });
+  });*/
   return (
-    <NavigationContainer>
-      {isAuth ? (
-        <Drawer.Navigator initialRouteName="Expenses">
-          <Drawer.Screen name="Expenses" component={()=><Expenses user={user}/>} />
-          <Drawer.Screen name="Logout" component={Logout} />
-        </Drawer.Navigator>
-      ) : (
-        <Authuntifitation />
-      )}
-    </NavigationContainer>
+    <Provider store={store}>
+      <AppNavigation />
+    </Provider>
   );
 }
 
