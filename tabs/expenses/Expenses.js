@@ -26,11 +26,13 @@ import { Colors } from "../../theme/colors";
 import EditIcon from "../../assets/svg/edit.svg";
 import AddIcon from "../../assets/svg/add.svg";
 import { BottomModal } from "../shared/BottomModal";
+import { parseToFullDateString } from "../../parsers/FullDateParser";
 
 export function Expenses() {
   const [expensesList, setExpensesList] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [newExpCost, setNewExpCost] = useState(null);
+  const [newExpDate, setNewExpDate] = useState(new Date(Date.now()))
 
   const { user } = useSelector((state) => state.userReducer);
 
@@ -126,6 +128,9 @@ export function Expenses() {
           >
             <AddIcon style={styles.addIcon}></AddIcon>
           </TouchableOpacity>
+          <View>
+            <Text style={styles.newExpDate}>{parseToFullDateString(newExpDate)}</Text>
+          </View>
           <TextInput
           style={styles.costInput}
             onChangeText={setNewExpCost}
@@ -223,7 +228,15 @@ const styles = StyleSheet.create({
     paddingBottom:10,
     paddingRight:20,
     paddingLeft:20,
-    borderRadius:10
+    borderRadius:10,
+    marginTop:10,
+    marginBottom:10
 
+  },
+  newExpDate:{
+    color:Colors.prime_dark,
+    fontSize:18,
+    marginTop:10,
+    marginBottom:10
   }
 });
