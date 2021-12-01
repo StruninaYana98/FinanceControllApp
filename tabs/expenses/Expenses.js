@@ -35,6 +35,7 @@ export function Expenses() {
   const [isOpen, setIsOpen] = useState(false);
   const [newExpCost, setNewExpCost] = useState(null);
   const [newExpDate, setNewExpDate] = useState(new Date(Date.now()));
+  const [isDatePickerOpen, setDatePickerOpen] = useState(false)
 
   const { user } = useSelector((state) => state.userReducer);
 
@@ -135,8 +136,11 @@ export function Expenses() {
               <Text style={styles.newExpDate}>
                 {parseToFullDateString(newExpDate)}
               </Text>
+              <TouchableOpacity onPress={()=>setDatePickerOpen(true)}>
+                <Text style={{color:"#fff"}}>open</Text>
+              </TouchableOpacity>
             </View>
-            <DatePicker date={newExpDate} onDateChanged={setNewExpDate}/>
+            <DatePicker date={newExpDate} onDateChanged={setNewExpDate} onCloseCalendar={()=>{setDatePickerOpen(false); console.log("close calendar")}} isOpen={isDatePickerOpen}/>
       
             <TextInput
               style={styles.costInput}

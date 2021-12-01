@@ -6,13 +6,13 @@ import {
   StyleSheet,
   TouchableHighlight,
 } from "react-native";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { Colors } from "../../theme/colors";
-export function DatePicker({ date, isOpen, closeCalendar, onDateChanged }) {
+export function DatePicker({ date, isOpen, onCloseCalendar, onDateChanged }) {
   const [daysList, setDaysList] = useState([]);
   let weekDays = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 
   useEffect(() => {
-      
     if (date) {
       let d = new Date(date.getFullYear(), date.getMonth(), 1);
       let days = [];
@@ -44,6 +44,7 @@ export function DatePicker({ date, isOpen, closeCalendar, onDateChanged }) {
           ]}
           onPress={() => {
             onDateChanged(day.date);
+            onCloseCalendar();
           }}
         >
           <Text>{day.date.getDate()}</Text>
@@ -62,11 +63,11 @@ export function DatePicker({ date, isOpen, closeCalendar, onDateChanged }) {
 
     totalDays.forEach((row, i) => {
       if (i % 7 !== 0) {
-        cells.push(row); 
+        cells.push(row);
       } else {
-        rows.push(cells); 
+        rows.push(cells);
         cells = [];
-        cells.push(row); 
+        cells.push(row);
       }
       if (i === totalDays.length - 1) {
         rows.push(cells);
@@ -75,30 +76,46 @@ export function DatePicker({ date, isOpen, closeCalendar, onDateChanged }) {
     return rows;
   }
   return (
-    <View style={styles.calendarContainer}>
-      <View>
-        <Text style={styles.month}>December</Text>
-      </View>
-      <View
-        style={[
-          styles.row,
-          {
-            borderBottomColor: Colors.prime_medium,
-            borderBottomWidth: 1,
-            marginBottom: 2,
-          },
-        ]}
-      >
-        {weekDays.map((weekDay) => (
-          <View style={styles.cell}>
-            <Text>{weekDay}</Text>
+    <Modal visible={isOpen} transparent={true} onRequestClose={onCloseCalendar}>
+      
+      
+          <View  style={{
+          flex: 1,
+          backgroundColor: Colors.overlay,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}>
+        <View
+          style={styles.calendarContainer}
+          onPress={(e) => e.stopPropagation()}
+        >
+          <View>
+            <Text style={styles.month}>December</Text>
           </View>
-        ))}
-      </View>
-      {daysList && daysList.length > 0
-        ? getRows().map((row) => <View style={styles.row}>{row}</View>)
-        : null}
-    </View>
+          <View
+            style={[
+              styles.row,
+              {
+                borderBottomColor: Colors.prime_medium,
+                borderBottomWidth: 1,
+                marginBottom: 2,
+              },
+            ]}
+          >
+            {weekDays.map((weekDay) => (
+              <View style={styles.cell}>
+                <Text>{weekDay}</Text>
+              </View>
+            ))}
+          </View>
+          {daysList && daysList.length > 0
+            ? getRows().map((row) => <View style={styles.row}>{row}</View>)
+            : null}
+        </View>
+        </View>
+     
+    </Modal>
   );
 }
 
