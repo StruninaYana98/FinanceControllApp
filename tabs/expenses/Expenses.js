@@ -109,7 +109,7 @@ export function Expenses() {
           style={styles.expensesList}
         />
         <View style={styles.bottomArea}>
-          <TouchableHighlight
+          <TouchableOpacity
             style={styles.addButton}
             title="add expenses"
             onPress={() => {
@@ -117,7 +117,7 @@ export function Expenses() {
             }}
           >
             <AddIcon style={styles.addIcon}></AddIcon>
-          </TouchableHighlight>
+          </TouchableOpacity>
         </View>
 
         <BottomModal heightRange={["0%", "70%"]} isOpen={isOpen}>
@@ -137,6 +137,9 @@ export function Expenses() {
             value={newExpCost}
             keyboardType="number-pad"
           ></TextInput>
+          <TouchableOpacity style={[styles.addButton, {width:'100%', marginLeft:30, marginRight:30}]}>
+            <Text>Add Expense</Text>
+          </TouchableOpacity>
         </BottomModal>
       </SafeAreaView>
     </TouchableWithoutFeedback>
@@ -196,15 +199,15 @@ const styles = StyleSheet.create({
     color: Colors.prime_light,
   },
   addButton: {
-    width: 50,
-    height: 50,
+    padding:20,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     color: "#fff",
     backgroundColor: Colors.accent,
    
-    marginTop: -20,
+    position:'absolute',
+    bottom:20,
   
     borderRadius: 15,
   },
