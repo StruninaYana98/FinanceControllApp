@@ -17,6 +17,7 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
   Animated,
+  TextInput,
 } from "react-native";
 import { ref, onValue, push, child, update, set } from "firebase/database";
 import { database } from "../../App";
@@ -28,8 +29,8 @@ import { BottomModal } from "../shared/BottomModal";
 
 export function Expenses() {
   const [expensesList, setExpensesList] = useState([]);
-  const bottomSwipeValue = useRef(new Animated.Value(0)).current;
   const [isOpen, setIsOpen] = useState(false);
+  const [newExpCost, setNewExpCost] = useState(null);
 
   const { user } = useSelector((state) => state.userReducer);
 
@@ -77,7 +78,7 @@ export function Expenses() {
   function ListItem({ item }) {
     return (
       <View style={styles.listItem}>
-        <TouchableOpacity  style={styles.editButton}>
+        <TouchableOpacity style={styles.editButton}>
           <EditIcon style={styles.editIcon}></EditIcon>
         </TouchableOpacity>
         <View style={styles.expInfo}>
@@ -125,9 +126,12 @@ export function Expenses() {
           >
             <AddIcon style={styles.addIcon}></AddIcon>
           </TouchableOpacity>
-          <Text>SWIPE!!!</Text>
-          <Text>SWIPE!!!</Text>
-          <Text>SWIPE!!!</Text>
+          <TextInput
+          style={styles.costInput}
+            onChangeText={setNewExpCost}
+            value={newExpCost}
+            keyboardType="number-pad"
+          ></TextInput>
         </BottomModal>
       </SafeAreaView>
     </TouchableWithoutFeedback>
@@ -179,14 +183,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.prime_dark,
     marginRight: 15,
-    shadowColor: Colors.prime_dark,
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.8,
-    shadowRadius: 5,
-    elevation: 20,
+  
   },
   editIcon: {
     width: 20,
@@ -201,17 +198,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     color: "#fff",
     backgroundColor: Colors.accent,
-    shadowColor: "#6051F9",
+   
     marginTop: -20,
-    shadowColor: Colors.accent,
-    shadowOffset: {
-      width: 0,
-      height: 6,
-    },
-    shadowOpacity: 0.8,
-    shadowRadius: 8,
-
-    elevation: 20,
+  
     borderRadius: 15,
   },
   addIcon: {
@@ -226,4 +215,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: "transparent",
   },
+  costInput:{
+    backgroundColor:Colors.overlay,
+    color:"#fff",
+    fontSize:20,
+    paddingTop:10,
+    paddingBottom:10,
+    paddingRight:20,
+    paddingLeft:20,
+    borderRadius:10
+
+  }
 });
