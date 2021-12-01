@@ -18,6 +18,7 @@ import {
   TouchableOpacity,
   Animated,
   TextInput,
+  ScrollView,
 } from "react-native";
 import { ref, onValue, push, child, update, set } from "firebase/database";
 import { database } from "../../App";
@@ -27,12 +28,13 @@ import EditIcon from "../../assets/svg/edit.svg";
 import AddIcon from "../../assets/svg/add.svg";
 import { BottomModal } from "../shared/BottomModal";
 import { parseToFullDateString } from "../../parsers/FullDateParser";
+import { DatePicker } from "../shared/DatePicker";
 
 export function Expenses() {
   const [expensesList, setExpensesList] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [newExpCost, setNewExpCost] = useState(null);
-  const [newExpDate, setNewExpDate] = useState(new Date(Date.now()))
+  const [newExpDate, setNewExpDate] = useState(new Date(Date.now()));
 
   const { user } = useSelector((state) => state.userReducer);
 
@@ -111,9 +113,9 @@ export function Expenses() {
         <View style={styles.bottomArea}>
           <TouchableOpacity
             style={styles.addButton}
-            title="add expenses"
-            onPress={() => {
+            onPress={(e) => {
               setIsOpen(true);
+              e.stopPropagation;
             }}
           >
             <AddIcon style={styles.addIcon}></AddIcon>
@@ -128,16 +130,27 @@ export function Expenses() {
           >
             <AddIcon style={styles.addIcon}></AddIcon>
           </TouchableOpacity>
-          <View>
-            <Text style={styles.newExpDate}>{parseToFullDateString(newExpDate)}</Text>
-          </View>
-          <TextInput
-          style={styles.costInput}
-            onChangeText={setNewExpCost}
-            value={newExpCost}
-            keyboardType="number-pad"
-          ></TextInput>
-          <TouchableOpacity style={[styles.addButton, {width:'100%', marginLeft:30, marginRight:30}]}>
+          <ScrollView>
+            <View>
+              <Text style={styles.newExpDate}>
+                {parseToFullDateString(newExpDate)}
+              </Text>
+            </View>
+            <DatePicker date={newExpDate} onDateChanged={setNewExpDate}/>
+      
+            <TextInput
+              style={styles.costInput}
+              onChangeText={setNewExpCost}
+              value={newExpCost}
+              keyboardType="number-pad"
+            ></TextInput>
+          </ScrollView>
+          <TouchableOpacity
+            style={[
+              styles.addButton,
+              { width: "100%", marginLeft: 30, marginRight: 30 },
+            ]}
+          >
             <Text>Add Expense</Text>
           </TouchableOpacity>
         </BottomModal>
@@ -191,7 +204,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.prime_dark,
     marginRight: 15,
-  
   },
   editIcon: {
     width: 20,
@@ -199,16 +211,16 @@ const styles = StyleSheet.create({
     color: Colors.prime_light,
   },
   addButton: {
-    padding:20,
+    padding: 20,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     color: "#fff",
     backgroundColor: Colors.accent,
-   
-    position:'absolute',
-    bottom:20,
-  
+
+    position: "absolute",
+    bottom: 20,
+    zIndex: 1,
     borderRadius: 15,
   },
   addIcon: {
@@ -217,29 +229,29 @@ const styles = StyleSheet.create({
     color: Colors.dark,
   },
   bottomArea: {
-    height: 40,
+    height: 80,
     display: "flex",
     justifyContent: "center",
     flexDirection: "row",
     backgroundColor: "transparent",
+    overflow: "visible",
   },
-  costInput:{
-    backgroundColor:Colors.overlay,
-    color:"#fff",
-    fontSize:20,
-    paddingTop:10,
-    paddingBottom:10,
-    paddingRight:20,
-    paddingLeft:20,
-    borderRadius:10,
-    marginTop:10,
-    marginBottom:10
-
+  costInput: {
+    backgroundColor: Colors.overlay,
+    color: "#fff",
+    fontSize: 20,
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingRight: 20,
+    paddingLeft: 20,
+    borderRadius: 10,
+    marginTop: 10,
+    marginBottom: 200,
   },
-  newExpDate:{
-    color:Colors.prime_dark,
-    fontSize:18,
-    marginTop:10,
-    marginBottom:10
-  }
+  newExpDate: {
+    color: Colors.prime_dark,
+    fontSize: 18,
+    marginTop: 10,
+    marginBottom: 10,
+  },
 });
