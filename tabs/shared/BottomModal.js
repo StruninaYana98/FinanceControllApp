@@ -14,6 +14,7 @@ import {
   StyleSheet,
   Pressable,
   TouchableHighlight,
+  TouchableWithoutFeedback,
   Animated,
 } from "react-native";
 import { Colors } from "../../theme/colors";
@@ -26,35 +27,41 @@ export function BottomModal({ heightRange, isOpen, children }) {
   });
 
   useEffect(() => {
-      console.log(isOpen)
+    console.log(isOpen);
     let toValue = 0;
     if (isOpen) {
       toValue = 1;
     }
     Animated.timing(modalHeightValue, {
       toValue: toValue,
-      duration: 3000,
+      duration: 500,
 
       useNativeDriver: false,
     }).start();
   }, [isOpen]);
 
   return (
-      <Animated.View
-        style={[
-          {
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            overflow: "hidden",
-            height: modalHeight,
-          },
-          styles.modalContainer,
-        ]}
+    <Animated.View
+      style={[
+        {
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          overflow: "hidden",
+          height: modalHeight,
+        },
+        styles.modalContainer,
+      ]}
+    >
+      <TouchableWithoutFeedback
+        onPress={(e) => {
+          e.stopPropagation();
+        }}
       >
-        {children}
-      </Animated.View>
+        <View style={{ width: "100%", height: "100%" , padding:30}}>{children}</View>
+      </TouchableWithoutFeedback>
+    </Animated.View>
   );
 }
 const styles = StyleSheet.create({

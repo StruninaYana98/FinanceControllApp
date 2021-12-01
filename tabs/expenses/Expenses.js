@@ -14,6 +14,8 @@ import {
   StyleSheet,
   Pressable,
   TouchableHighlight,
+  TouchableWithoutFeedback,
+  TouchableOpacity,
   Animated,
 } from "react-native";
 import { ref, onValue, push, child, update, set } from "firebase/database";
@@ -75,9 +77,9 @@ export function Expenses() {
   function ListItem({ item }) {
     return (
       <View style={styles.listItem}>
-        <Pressable title="" style={styles.editButton}>
+        <TouchableOpacity  style={styles.editButton}>
           <EditIcon style={styles.editIcon}></EditIcon>
-        </Pressable>
+        </TouchableOpacity>
         <View style={styles.expInfo}>
           <View>
             <Text style={styles.expCategory}>{item.title}</Text>
@@ -92,31 +94,43 @@ export function Expenses() {
   }
 
   return (
-    <SafeAreaView style={styles.screen}>
-      <FlatList
-        data={expensesList ? expensesList : []}
-        renderItem={({ item }) => <ListItem item={item} />}
-        style={styles.expensesList}
-      />
-      <View style={styles.bottomArea}>
-        <TouchableHighlight
-          style={styles.addButton}
-          title="add expenses"
-          onPress={()=>{setIsOpen(isOpen);}}
-        >
-          <AddIcon style={styles.addIcon}></AddIcon>
-        </TouchableHighlight>
-      </View>
+    <TouchableWithoutFeedback
+      onPress={(e) => {
+        setIsOpen(false);
+      }}
+    >
+      <SafeAreaView style={styles.screen}>
+        <FlatList
+          data={expensesList ? expensesList : []}
+          renderItem={({ item }) => <ListItem item={item} />}
+          style={styles.expensesList}
+        />
+        <View style={styles.bottomArea}>
+          <TouchableHighlight
+            style={styles.addButton}
+            title="add expenses"
+            onPress={() => {
+              setIsOpen(true);
+            }}
+          >
+            <AddIcon style={styles.addIcon}></AddIcon>
+          </TouchableHighlight>
+        </View>
 
-      <BottomModal heightRange={['0%', '70%']} isOpen={isOpen}>
-        <TouchableHighlight onPress={()=>{setIsOpen(false)}}>
-          <AddIcon style={styles.addIcon}></AddIcon>
-        </TouchableHighlight>
-        <Text>SWIPE!!!</Text>
-        <Text>SWIPE!!!</Text>
-        <Text>SWIPE!!!</Text>
-      </BottomModal>
-    </SafeAreaView>
+        <BottomModal heightRange={["0%", "70%"]} isOpen={isOpen}>
+          <TouchableOpacity
+            onPress={() => {
+              setIsOpen(false);
+            }}
+          >
+            <AddIcon style={styles.addIcon}></AddIcon>
+          </TouchableOpacity>
+          <Text>SWIPE!!!</Text>
+          <Text>SWIPE!!!</Text>
+          <Text>SWIPE!!!</Text>
+        </BottomModal>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 }
 
