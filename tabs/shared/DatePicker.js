@@ -88,7 +88,6 @@ export function DatePicker({ date, isOpen, onCloseCalendar, onDateChanged }) {
       <View
         style={{
           flex: 1,
-          backgroundColor: Colors.overlay,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",

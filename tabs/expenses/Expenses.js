@@ -31,13 +31,15 @@ import CalendarIcon from '../../assets/svg/calendar.svg';
 import { BottomModal } from "../shared/BottomModal";
 import { parseToFullDateString } from "../../parsers/FullDateParser";
 import { DatePicker } from "../shared/DatePicker";
+import { Categories } from "../shared/Сategories";
 
 export function Expenses() {
   const [expensesList, setExpensesList] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [newExpCost, setNewExpCost] = useState(null);
   const [newExpDate, setNewExpDate] = useState(new Date(Date.now()));
-  const [isDatePickerOpen, setDatePickerOpen] = useState(false)
+  const [isDatePickerOpen, setDatePickerOpen] = useState(false);
+  const [newExpCategory, setNewExpCategory] = useState(null);
 
   const { user } = useSelector((state) => state.userReducer);
 
@@ -133,16 +135,16 @@ export function Expenses() {
           </TouchableOpacity>
           </View>
           <ScrollView>
-            <View style={{display:'flex', flexDirection:"row", alignItems:'center'}}>
+            <View style={{display:'flex', flexDirection:"row", alignItems:'center', marginBottom:10}}>
               <Text style={styles.newExpDate}>
                 {parseToFullDateString(newExpDate)}
               </Text>
-              <TouchableOpacity style={styles.functionalButton} onPress={()=>setDatePickerOpen(true)}>
-                <CalendarIcon style={styles.functionalIcon}></CalendarIcon>
+              <TouchableOpacity style={styles.navigationButton} onPress={()=>setDatePickerOpen(true)}>
+                <CalendarIcon style={styles.navigationIcon}></CalendarIcon>
               </TouchableOpacity>
             </View>
             <DatePicker date={newExpDate} onDateChanged={setNewExpDate} onCloseCalendar={()=>{setDatePickerOpen(false); console.log("close calendar")}} isOpen={isDatePickerOpen}/>
-      
+            <Categories checkedCategory={newExpCategory} onCheck={setNewExpCategory}/>
             <TextInput
               style={styles.costInput}
               onChangeText={setNewExpCost}
@@ -254,11 +256,11 @@ const styles = StyleSheet.create({
     marginBottom: 200,
   },
   newExpDate: {
-    color: Colors.prime_medium,
+    color: '#fff',
     fontSize: 18,
     marginTop: 10,
     marginBottom: 10,
-    marginRight:20
+    marginRight:15
   },
   navigationButton:{
     display:"flex",

@@ -4,5 +4,5 @@ export const Colors = {
     prime_medium:"#2E645F",
     prime_dark:"#40534D",
     accent:"#BE3726",
-    overlay:"rgba(232, 232, 232, 0.05)",
+    overlay:"rgba(232, 232, 232, 0.1)",
 }
