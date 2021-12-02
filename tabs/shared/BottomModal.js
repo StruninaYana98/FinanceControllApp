@@ -16,52 +16,74 @@ import {
   TouchableHighlight,
   TouchableWithoutFeedback,
   Animated,
+  Modal,
 } from "react-native";
 import { Colors } from "../../theme/colors";
 
-export function BottomModal({ heightRange, isOpen, children }) {
+export function BottomModal({ heightRange, isOpen, onCloseModal, children }) {
   const modalHeightValue = useRef(new Animated.Value(0)).current;
+  const [isModalOpen, setIsModalOpen] = useState(isOpen);
   const modalHeight = modalHeightValue.interpolate({
     inputRange: [0, 1],
     outputRange: heightRange,
   });
 
   useEffect(() => {
-    console.log(isOpen);
-    let toValue = 0;
-    if (isOpen) {
-      toValue = 1;
-    }
-    Animated.timing(modalHeightValue, {
-      toValue: toValue,
-      duration: 500,
+    (async () => {
+      console.log(isOpen);
+      let toValue = 0;
+      if (isOpen) {
+        toValue = 1;
+        setIsModalOpen(true);
+      }
+      Animated.timing(modalHeightValue, {
+        toValue: toValue,
+        duration: 500,
+        delay: 20,
 
-      useNativeDriver: false,
-    }).start();
+        useNativeDriver: false,
+      }).start(() => {
+        if (!isOpen) {
+          setIsModalOpen(false);
+        }
+      });
+    })();
   }, [isOpen]);
 
   return (
-    <Animated.View
-      style={[
-        {
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          overflow: "hidden",
-          height: modalHeight,
-        },
-        styles.modalContainer,
-      ]}
+    <Modal
+      visible={isModalOpen}
+      transparent={true}
+      statusBarTranslucent={true}
+      animationType="fade"
+      onRequestClose={onCloseModal}
     >
-      <TouchableWithoutFeedback
-        onPress={(e) => {
-          e.stopPropagation();
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: Colors.overlay,
+          width: "100%",
         }}
       >
-        <View style={{ width: "100%", height: "100%" , padding:30}}>{children}</View>
-      </TouchableWithoutFeedback>
-    </Animated.View>
+        <Animated.View
+          style={[
+            {
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              overflow: "hidden",
+              height: modalHeight,
+            },
+            styles.modalContainer,
+          ]}
+        >
+          <View style={{ width: "100%", height: "100%", padding: 30 }}>
+            {children}
+          </View>
+        </Animated.View>
+      </View>
+    </Modal>
   );
 }
 const styles = StyleSheet.create({

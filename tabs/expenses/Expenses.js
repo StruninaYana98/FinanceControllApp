@@ -102,11 +102,7 @@ export function Expenses() {
   }
 
   return (
-    <TouchableWithoutFeedback
-      onPress={(e) => {
-        setIsOpen(false);
-      }}
-    >
+
       <SafeAreaView style={styles.screen}>
         <FlatList
           data={expensesList ? expensesList : []}
@@ -125,7 +121,7 @@ export function Expenses() {
           </TouchableOpacity>
         </View>
 
-        <BottomModal heightRange={["0%", "70%"]} isOpen={isOpen}>
+        <BottomModal heightRange={["0%", "70%"]} isOpen={isOpen} onCloseModal={()=>setIsOpen(false)}>
           <View style={{display:"flex", flexDirection:"row", justifyContent:"flex-end"}}>
           <TouchableOpacity
           style={[styles.navigationButton, {marginRight:0}]}
@@ -164,7 +160,6 @@ export function Expenses() {
           </TouchableOpacity>
         </BottomModal>
       </SafeAreaView>
-    </TouchableWithoutFeedback>
   );
 }
 
