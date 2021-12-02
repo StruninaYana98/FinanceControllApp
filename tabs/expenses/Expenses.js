@@ -123,7 +123,7 @@ export function Expenses() {
           </TouchableOpacity>
         </View>
 
-        <BottomModal heightRange={["0%", "70%"]} isOpen={isOpen} onCloseModal={()=>setIsOpen(false)}>
+        <BottomModal heightRange={["0%", "60%"]} isOpen={isOpen} onCloseModal={()=>setIsOpen(false)}>
           <View style={{display:"flex", flexDirection:"row", justifyContent:"flex-end"}}>
           <TouchableOpacity
           style={[styles.navigationButton, {marginRight:0}]}
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     borderRadius: 10,
     marginTop: 10,
-    marginBottom: 200,
+    marginBottom: 70,
   },
   newExpDate: {
     color: '#fff',
