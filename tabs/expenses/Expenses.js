@@ -26,6 +26,8 @@ import { useSelector } from "react-redux";
 import { Colors } from "../../theme/colors";
 import EditIcon from "../../assets/svg/edit.svg";
 import AddIcon from "../../assets/svg/add.svg";
+import CloseIcon from '../../assets/svg/close.svg';
+import CalendarIcon from '../../assets/svg/calendar.svg';
 import { BottomModal } from "../shared/BottomModal";
 import { parseToFullDateString } from "../../parsers/FullDateParser";
 import { DatePicker } from "../shared/DatePicker";
@@ -83,8 +85,8 @@ export function Expenses() {
   function ListItem({ item }) {
     return (
       <View style={styles.listItem}>
-        <TouchableOpacity style={styles.editButton}>
-          <EditIcon style={styles.editIcon}></EditIcon>
+        <TouchableOpacity style={styles.functionalButton}>
+          <EditIcon style={styles.functionalIcon}></EditIcon>
         </TouchableOpacity>
         <View style={styles.expInfo}>
           <View>
@@ -124,20 +126,23 @@ export function Expenses() {
         </View>
 
         <BottomModal heightRange={["0%", "70%"]} isOpen={isOpen}>
+          <View style={{display:"flex", flexDirection:"row", justifyContent:"flex-end"}}>
           <TouchableOpacity
+          style={[styles.navigationButton, {marginRight:0}]}
             onPress={() => {
               setIsOpen(false);
             }}
           >
-            <AddIcon style={styles.addIcon}></AddIcon>
+            <CloseIcon style={styles.navigationIcon}></CloseIcon>
           </TouchableOpacity>
+          </View>
           <ScrollView>
-            <View>
+            <View style={{display:'flex', flexDirection:"row", alignItems:'center'}}>
               <Text style={styles.newExpDate}>
                 {parseToFullDateString(newExpDate)}
               </Text>
-              <TouchableOpacity onPress={()=>setDatePickerOpen(true)}>
-                <Text style={{color:"#fff"}}>open</Text>
+              <TouchableOpacity style={styles.functionalButton} onPress={()=>setDatePickerOpen(true)}>
+                <CalendarIcon style={styles.functionalIcon}></CalendarIcon>
               </TouchableOpacity>
             </View>
             <DatePicker date={newExpDate} onDateChanged={setNewExpDate} onCloseCalendar={()=>{setDatePickerOpen(false); console.log("close calendar")}} isOpen={isDatePickerOpen}/>
@@ -177,6 +182,7 @@ const styles = StyleSheet.create({
   expDate: {
     color: Colors.prime_dark,
     fontSize: 15,
+    marginRight:20
   },
   expCategory: {
     color: "#fff",
@@ -197,9 +203,9 @@ const styles = StyleSheet.create({
   expensesList: {
     padding: 15,
   },
-  editButton: {
-    width: 40,
-    height: 40,
+  functionalButton: {
+    width: 35,
+    height: 35,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -209,7 +215,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.prime_dark,
     marginRight: 15,
   },
-  editIcon: {
+  functionalIcon: {
     width: 20,
     height: 20,
     color: Colors.prime_light,
@@ -253,9 +259,25 @@ const styles = StyleSheet.create({
     marginBottom: 200,
   },
   newExpDate: {
-    color: Colors.prime_dark,
+    color: Colors.prime_medium,
     fontSize: 18,
     marginTop: 10,
     marginBottom: 10,
+    marginRight:20
   },
+  navigationButton:{
+    display:"flex",
+    justifyContent:'center',
+    alignItems:'center',
+    padding:10,
+    borderRadius:10,
+    backgroundColor:Colors.overlay,
+  },
+  navigationIcon:{
+    color:'#fff',
+    width:20,
+    height:20
+  }
+
+
 });

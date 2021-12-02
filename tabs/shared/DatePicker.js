@@ -5,9 +5,12 @@ import {
   Text,
   StyleSheet,
   TouchableHighlight,
+  TouchableOpacity,
 } from "react-native";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { Colors } from "../../theme/colors";
+import CloseIcon from "../../assets/svg/close.svg";
+
 export function DatePicker({ date, isOpen, onCloseCalendar, onDateChanged }) {
   const [daysList, setDaysList] = useState([]);
   let weekDays = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
@@ -76,20 +79,34 @@ export function DatePicker({ date, isOpen, onCloseCalendar, onDateChanged }) {
     return rows;
   }
   return (
-    <Modal visible={isOpen} transparent={true} onRequestClose={onCloseCalendar}>
-      
-      
-          <View  style={{
+    <Modal
+      visible={isOpen}
+      transparent={true}
+      onRequestClose={onCloseCalendar}
+      animationType="fade"
+    >
+      <View
+        style={{
           flex: 1,
           backgroundColor: Colors.overlay,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-        }}>
+        }}
+      >
         <View
-          style={styles.calendarContainer}
+          style={[styles.calendarContainer, { position: "relative" }]}
           onPress={(e) => e.stopPropagation()}
         >
+          <TouchableOpacity
+            onPress={onCloseCalendar}
+            style={[
+              styles.navigationButton,
+              { position: "absolute", right: 10, top: 10 },
+            ]}
+          >
+            <CloseIcon style={styles.navigationIcon}></CloseIcon>
+          </TouchableOpacity>
           <View>
             <Text style={styles.month}>December</Text>
           </View>
@@ -113,8 +130,7 @@ export function DatePicker({ date, isOpen, onCloseCalendar, onDateChanged }) {
             ? getRows().map((row) => <View style={styles.row}>{row}</View>)
             : null}
         </View>
-        </View>
-     
+      </View>
     </Modal>
   );
 }
@@ -148,5 +164,20 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     padding: 10,
+    marginRight: 40,
+    marginLeft: 40,
+  },
+  navigationButton: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: Colors.overlay,
+  },
+  navigationIcon: {
+    color: "#fff",
+    width: 20,
+    height: 20,
   },
 });
