@@ -31,9 +31,14 @@ import { BottomModal } from "../shared/BottomModal";
 import { parseToFullDateString } from "../../parsers/FullDateParser";
 import { NewEntry } from "../shared/NewEntry";
 import { EntriesList } from "../shared/EntriesList";
+import { useDispatch } from "react-redux";
+import { setExpensesList } from "../../store/slices/expensesSlice";
+import { parseDatetoMonthYearString } from "../../parsers/MonthParser";
 
 export function Expenses() {
-  const [expensesList, setExpensesList] = useState([]);
+  const {expensesList} = useSelector((state) =>state.expensesReducer);
+  const dispatch = useDispatch();
+
   const [isNewExpModalOpen, setIsNewExpModalOpen] = useState(false);
   const [newExpSum, setNewExpSum] = useState(null);
   const [newExpDate, setNewExpDate] = useState(new Date(Date.now()));
@@ -44,7 +49,9 @@ export function Expenses() {
   useEffect(() => {
     (async () => {
       if (user) {
-        const expensesRef = ref(database, "expenses/" + user.uid + "/11-2021");
+        let month  =  parseDatetoMonthYearString(new Date(Date.now()));
+        dispatch(setExpensesMonth(month))
+        const expensesRef = ref(database, "expenses/" + user.uid + "/" + month);
 
         onValue(expensesRef, (snapshot) => {
           let expList = [];
@@ -56,7 +63,7 @@ export function Expenses() {
             item.index = index + 1;
           });
           console.log(expList);
-          setExpensesList(expList);
+          dispatch(setExpensesList(expList));
         }).catch((error) => {
           alert(error.message);
         });
