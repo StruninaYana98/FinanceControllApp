@@ -19,6 +19,7 @@ import {
   Animated,
   TextInput,
   ScrollView,
+  ImageBackground,
 } from "react-native";
 import { ref, onValue, push, child, update, set } from "firebase/database";
 import { database } from "../../App";
@@ -26,34 +27,38 @@ import { useSelector } from "react-redux";
 import { Colors } from "../../theme/colors";
 import EditIcon from "../../assets/svg/edit.svg";
 import AddIcon from "../../assets/svg/add.svg";
-import CloseIcon from '../../assets/svg/close.svg';
-import CalendarIcon from '../../assets/svg/calendar.svg';
+import CloseIcon from "../../assets/svg/close.svg";
+import CalendarIcon from "../../assets/svg/calendar.svg";
 import { BottomModal } from "../shared/BottomModal";
 import { parseToFullDateString } from "../../parsers/FullDateParser";
 import { DatePicker } from "../shared/DatePicker";
 import { Categories } from "../shared/Сategories";
+import { NewEntry } from "../shared/NewEntry";
 
 export function Expenses() {
   const [expensesList, setExpensesList] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [newExpCost, setNewExpCost] = useState(null);
+  const [newExpSum, setNewExpSum] = useState(null);
   const [newExpDate, setNewExpDate] = useState(new Date(Date.now()));
   const [isDatePickerOpen, setDatePickerOpen] = useState(false);
   const [newExpCategory, setNewExpCategory] = useState(null);
 
   const { user } = useSelector((state) => state.userReducer);
 
-  async function addExpenses() {
-    const ex = {
-      date: "28.11.2021",
-      title: "jberv",
-      cost: "10",
+  async function addNewExpense() {
+    if (!newExpDate || !newExpCategory || !newExpSum) {
+      return;
+    }
+    const newExpense = {
+      date: parseToFullDateString(newExpDate),
+      category: newExpCategory,
+      cost: newExpSum,
     };
 
     const expensesListRef = ref(database, "expenses/" + user.uid + "/11-2021");
     const newExpensesRef = push(expensesListRef);
 
-    set(newExpensesRef, ex)
+    set(newExpensesRef, newExpense)
       .then(() => {
         alert("success");
       })
@@ -72,6 +77,11 @@ export function Expenses() {
           snapshot.forEach((child) => {
             expList.push(child.val());
           });
+
+          expList.forEach((item, index) => {
+            item.index = index + 1;
+          });
+          console.log(expList);
           setExpensesList(expList);
         }).catch((error) => {
           alert(error.message);
@@ -86,13 +96,21 @@ export function Expenses() {
 
   function ListItem({ item }) {
     return (
-      <View style={styles.listItem}>
+      <View
+        style={[
+          styles.listItem,
+          {
+            marginBottom: item.index == 1 ? 80 : 15,
+            marginTop: item.index == expensesList.length ? 80 : 0,
+          },
+        ]}
+      >
         <TouchableOpacity style={styles.functionalButton}>
           <EditIcon style={styles.functionalIcon}></EditIcon>
         </TouchableOpacity>
         <View style={styles.expInfo}>
           <View>
-            <Text style={styles.expCategory}>{item.title}</Text>
+            <Text style={styles.expCategory}>{item.category?.name}</Text>
             <Text style={styles.expDate}>{item.date}</Text>
           </View>
           <View>
@@ -104,64 +122,64 @@ export function Expenses() {
   }
 
   return (
+    <SafeAreaView style={styles.screen}>
+      <FlatList
+        inverted={true}
+        data={expensesList ? expensesList : []}
+        renderItem={({ item }) => <ListItem item={item} />}
+        style={styles.expensesList}
+      />
+      <View style={styles.bottomArea}>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={(e) => {
+            setIsOpen(true);
+          }}
+        >
+          <AddIcon style={styles.addIcon}></AddIcon>
+        </TouchableOpacity>
+      </View>
 
-      <SafeAreaView style={styles.screen}>
-        <FlatList
-          data={expensesList ? expensesList : []}
-          renderItem={({ item }) => <ListItem item={item} />}
-          style={styles.expensesList}
-        />
-        <View style={styles.bottomArea}>
+      <BottomModal
+        heightRange={["0%", "70%"]}
+        isOpen={isOpen}
+        onCloseModal={() => setIsOpen(false)}
+      >
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "flex-end",
+          }}
+        >
           <TouchableOpacity
-            style={styles.addButton}
-            onPress={(e) => {
-              setIsOpen(true);
-              e.stopPropagation;
-            }}
-          >
-            <AddIcon style={styles.addIcon}></AddIcon>
-          </TouchableOpacity>
-        </View>
-
-        <BottomModal heightRange={["0%", "60%"]} isOpen={isOpen} onCloseModal={()=>setIsOpen(false)}>
-          <View style={{display:"flex", flexDirection:"row", justifyContent:"flex-end"}}>
-          <TouchableOpacity
-          style={[styles.navigationButton, {marginRight:0}]}
+            style={[styles.navigationButton, { marginRight: 0 }]}
             onPress={() => {
               setIsOpen(false);
             }}
           >
             <CloseIcon style={styles.navigationIcon}></CloseIcon>
           </TouchableOpacity>
-          </View>
-          <ScrollView>
-            <View style={{display:'flex', flexDirection:"row", alignItems:'center', marginBottom:10}}>
-              <Text style={styles.newExpDate}>
-                {parseToFullDateString(newExpDate)}
-              </Text>
-              <TouchableOpacity style={styles.navigationButton} onPress={()=>setDatePickerOpen(true)}>
-                <CalendarIcon style={styles.navigationIcon}></CalendarIcon>
-              </TouchableOpacity>
-            </View>
-            <DatePicker date={newExpDate} onDateChanged={setNewExpDate} onCloseCalendar={()=>{setDatePickerOpen(false); console.log("close calendar")}} isOpen={isDatePickerOpen}/>
-            <Categories checkedCategory={newExpCategory} onCheck={setNewExpCategory}/>
-            <TextInput
-              style={styles.costInput}
-              onChangeText={setNewExpCost}
-              value={newExpCost}
-              keyboardType="number-pad"
-            ></TextInput>
-          </ScrollView>
-          <TouchableOpacity
-            style={[
-              styles.addButton,
-              { width: "100%", marginLeft: 30, marginRight: 30 },
-            ]}
-          >
-            <Text>Add Expense</Text>
-          </TouchableOpacity>
-        </BottomModal>
-      </SafeAreaView>
+        </View>
+        <NewEntry
+          newDate={newExpDate}
+          setNewDate={setNewExpDate}
+          newCategory={newExpCategory}
+          setNewCategory={setNewExpCategory}
+          newSum={newExpSum}
+          setNewSum={setNewExpSum}
+        />
+        <TouchableOpacity
+          style={[
+            styles.addButton,
+            { width: "100%", marginLeft: 30, marginRight: 30 },
+          ]}
+          onPress={addNewExpense}
+        >
+          <Text>Add Expense</Text>
+        </TouchableOpacity>
+      </BottomModal>
+    </SafeAreaView>
   );
 }
 
@@ -179,7 +197,7 @@ const styles = StyleSheet.create({
   expDate: {
     color: Colors.prime_dark,
     fontSize: 15,
-    marginRight:20
+    marginRight: 20,
   },
   expCategory: {
     color: "#fff",
@@ -240,41 +258,24 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     flexDirection: "row",
-    backgroundColor: "transparent",
-    overflow: "visible",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
-  costInput: {
-    backgroundColor: Colors.overlay,
-    color: "#fff",
-    fontSize: 20,
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingRight: 20,
-    paddingLeft: 20,
+
+
+  navigationButton: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
     borderRadius: 10,
-    marginTop: 10,
-    marginBottom: 70,
+    backgroundColor: Colors.overlay,
   },
-  newExpDate: {
-    color: '#fff',
-    fontSize: 18,
-    marginTop: 10,
-    marginBottom: 10,
-    marginRight:15
+  navigationIcon: {
+    color: "#fff",
+    width: 20,
+    height: 20,
   },
-  navigationButton:{
-    display:"flex",
-    justifyContent:'center',
-    alignItems:'center',
-    padding:10,
-    borderRadius:10,
-    backgroundColor:Colors.overlay,
-  },
-  navigationIcon:{
-    color:'#fff',
-    width:20,
-    height:20
-  }
-
-
 });
