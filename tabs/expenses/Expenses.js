@@ -25,47 +25,21 @@ import { ref, onValue, push, child, update, set } from "firebase/database";
 import { database } from "../../App";
 import { useSelector } from "react-redux";
 import { Colors } from "../../theme/colors";
-import EditIcon from "../../assets/svg/edit.svg";
 import AddIcon from "../../assets/svg/add.svg";
 import CloseIcon from "../../assets/svg/close.svg";
-import CalendarIcon from "../../assets/svg/calendar.svg";
 import { BottomModal } from "../shared/BottomModal";
 import { parseToFullDateString } from "../../parsers/FullDateParser";
-import { DatePicker } from "../shared/DatePicker";
-import { Categories } from "../shared/Сategories";
 import { NewEntry } from "../shared/NewEntry";
+import { EntriesList } from "../shared/EntriesList";
 
 export function Expenses() {
   const [expensesList, setExpensesList] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isNewExpModalOpen, setIsNewExpModalOpen] = useState(false);
   const [newExpSum, setNewExpSum] = useState(null);
   const [newExpDate, setNewExpDate] = useState(new Date(Date.now()));
-  const [isDatePickerOpen, setDatePickerOpen] = useState(false);
   const [newExpCategory, setNewExpCategory] = useState(null);
 
   const { user } = useSelector((state) => state.userReducer);
-
-  async function addNewExpense() {
-    if (!newExpDate || !newExpCategory || !newExpSum) {
-      return;
-    }
-    const newExpense = {
-      date: parseToFullDateString(newExpDate),
-      category: newExpCategory,
-      cost: newExpSum,
-    };
-
-    const expensesListRef = ref(database, "expenses/" + user.uid + "/11-2021");
-    const newExpensesRef = push(expensesListRef);
-
-    set(newExpensesRef, newExpense)
-      .then(() => {
-        alert("success");
-      })
-      .catch((error) => {
-        alert(error.message);
-      });
-  }
 
   useEffect(() => {
     (async () => {
@@ -90,50 +64,43 @@ export function Expenses() {
     })();
   }, [user]);
 
-  function toggleSwipe() {
-    setIsOpen(!isOpen);
+  async function addNewExpense() {
+    if (!newExpDate || !newExpCategory || !newExpSum) {
+      return;
+    }
+    const newExpense = {
+      date: parseToFullDateString(newExpDate),
+      category: newExpCategory,
+      sum: newExpSum,
+    };
+
+    const expensesListRef = ref(database, "expenses/" + user.uid + "/11-2021");
+    const newExpensesRef = push(expensesListRef);
+
+    set(newExpensesRef, newExpense)
+      .then(() => {
+        setIsNewExpModalOpen(false);
+        clearNewExpenseEntry();
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
   }
 
-  function ListItem({ item }) {
-    return (
-      <View
-        style={[
-          styles.listItem,
-          {
-            marginBottom: item.index == 1 ? 80 : 15,
-            marginTop: item.index == expensesList.length ? 80 : 0,
-          },
-        ]}
-      >
-        <TouchableOpacity style={styles.functionalButton}>
-          <EditIcon style={styles.functionalIcon}></EditIcon>
-        </TouchableOpacity>
-        <View style={styles.expInfo}>
-          <View>
-            <Text style={styles.expCategory}>{item.category?.name}</Text>
-            <Text style={styles.expDate}>{item.date}</Text>
-          </View>
-          <View>
-            <Text style={styles.expCost}>-{item.cost}</Text>
-          </View>
-        </View>
-      </View>
-    );
+  function clearNewExpenseEntry() {
+    setNewExpDate(new Date(Date.now()));
+    setNewExpCategory(null);
+    setNewExpSum(null);
   }
 
   return (
     <SafeAreaView style={styles.screen}>
-      <FlatList
-        inverted={true}
-        data={expensesList ? expensesList : []}
-        renderItem={({ item }) => <ListItem item={item} />}
-        style={styles.expensesList}
-      />
+      <EntriesList dataList={expensesList} />
       <View style={styles.bottomArea}>
         <TouchableOpacity
           style={styles.addButton}
           onPress={(e) => {
-            setIsOpen(true);
+            setIsNewExpModalOpen(true);
           }}
         >
           <AddIcon style={styles.addIcon}></AddIcon>
@@ -142,8 +109,8 @@ export function Expenses() {
 
       <BottomModal
         heightRange={["0%", "70%"]}
-        isOpen={isOpen}
-        onCloseModal={() => setIsOpen(false)}
+        isOpen={isNewExpModalOpen}
+        onCloseModal={() => setIsNewExpModalOpen(false)}
       >
         <View
           style={{
@@ -155,7 +122,7 @@ export function Expenses() {
           <TouchableOpacity
             style={[styles.navigationButton, { marginRight: 0 }]}
             onPress={() => {
-              setIsOpen(false);
+              setIsNewExpModalOpen(false);
             }}
           >
             <CloseIcon style={styles.navigationIcon}></CloseIcon>
@@ -170,9 +137,15 @@ export function Expenses() {
           setNewSum={setNewExpSum}
         />
         <TouchableOpacity
+          disabled={!newExpDate || !newExpCategory || !newExpSum}
           style={[
             styles.addButton,
-            { width: "100%", marginLeft: 30, marginRight: 30 },
+            {
+              width: "100%",
+              marginLeft: 30,
+              marginRight: 30,
+              opacity: !newExpDate || !newExpCategory || !newExpSum ? 0.3 : 1,
+            },
           ]}
           onPress={addNewExpense}
         >
@@ -244,7 +217,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.accent,
 
     position: "absolute",
-    bottom: 20,
+    bottom: 10,
     zIndex: 1,
     borderRadius: 15,
   },
@@ -263,7 +236,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
   },
-
 
   navigationButton: {
     display: "flex",
