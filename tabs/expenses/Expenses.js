@@ -21,7 +21,7 @@ import {
   ScrollView,
   ImageBackground,
 } from "react-native";
-import { ref, onValue, push, child, update, set } from "firebase/database";
+import { ref, onValue, push, child, update, set , remove} from "firebase/database";
 import { database } from "../../App";
 import { useSelector } from "react-redux";
 import { Colors } from "../../theme/colors";
@@ -32,11 +32,16 @@ import { parseToFullDateString } from "../../parsers/FullDateParser";
 import { NewEntry } from "../shared/NewEntry";
 import { EntriesList } from "../shared/EntriesList";
 import { useDispatch } from "react-redux";
-import { setExpensesList } from "../../store/slices/expensesSlice";
+import {
+  setExpensesList,
+  setExpensesMonth,
+} from "../../store/slices/expensesSlice";
 import { parseDatetoMonthYearString } from "../../parsers/MonthParser";
 
 export function Expenses() {
-  const {expensesList} = useSelector((state) =>state.expensesReducer);
+  const { expensesList, expensesMonth } = useSelector(
+    (state) => state.expensesReducer
+  );
   const dispatch = useDispatch();
 
   const [isNewExpModalOpen, setIsNewExpModalOpen] = useState(false);
@@ -49,20 +54,22 @@ export function Expenses() {
   useEffect(() => {
     (async () => {
       if (user) {
-        let month  =  parseDatetoMonthYearString(new Date(Date.now()));
-        dispatch(setExpensesMonth(month))
+        let month = parseDatetoMonthYearString(new Date(Date.now()));
+        dispatch(setExpensesMonth(month));
+
         const expensesRef = ref(database, "expenses/" + user.uid + "/" + month);
 
-        onValue(expensesRef, (snapshot) => {
+        await onValue(expensesRef, (snapshot) => {
           let expList = [];
           snapshot.forEach((child) => {
-            expList.push(child.val());
+            expList.push({ ...child.val(), key: child.key });
           });
 
           expList.forEach((item, index) => {
             item.index = index + 1;
           });
           console.log(expList);
+
           dispatch(setExpensesList(expList));
         }).catch((error) => {
           alert(error.message);
@@ -75,13 +82,17 @@ export function Expenses() {
     if (!newExpDate || !newExpCategory || !newExpSum) {
       return;
     }
+
     const newExpense = {
       date: parseToFullDateString(newExpDate),
       category: newExpCategory,
       sum: newExpSum,
     };
 
-    const expensesListRef = ref(database, "expenses/" + user.uid + "/11-2021");
+    const expensesListRef = ref(
+      database,
+      "expenses/" + user.uid + "/" + expensesMonth
+    );
     const newExpensesRef = push(expensesListRef);
 
     set(newExpensesRef, newExpense)
@@ -94,6 +105,34 @@ export function Expenses() {
       });
   }
 
+  async function updateExpense(item) {
+    const updatedExp = {
+      date: item.date,
+      category: item.category,
+      sum: item.sum,
+    };
+
+    const updates = {
+      ["expenses/" +
+      user.uid +
+      "/" +
+      expensesMonth +
+      "/" +
+      item.key]: updatedExp,
+    };
+
+   return update(ref(database), updates)
+  }
+
+  async function deleteExpense(item) {
+    const expenseRef = ref(
+      database,
+      "expenses/" + user.uid + "/" + expensesMonth  +"/" + item.key
+    );
+    return remove(expenseRef);
+
+  }
+
   function clearNewExpenseEntry() {
     setNewExpDate(new Date(Date.now()));
     setNewExpCategory(null);
@@ -102,7 +141,7 @@ export function Expenses() {
 
   return (
     <SafeAreaView style={styles.screen}>
-      <EntriesList dataList={expensesList} />
+      <EntriesList dataList={expensesList} updateEntry={updateExpense} deleteEntry={deleteExpense} />
       <View style={styles.bottomArea}>
         <TouchableOpacity
           style={styles.addButton}
