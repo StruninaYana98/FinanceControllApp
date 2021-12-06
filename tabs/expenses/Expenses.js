@@ -37,12 +37,15 @@ import {
   setExpensesMonth,
 } from "../../store/slices/expensesSlice";
 import { parseDatetoMonthYearString } from "../../parsers/MonthParser";
+import { MonthYearPicker } from "../shared/MonthYearPicker";
 
 export function Expenses() {
   const { expensesList, expensesMonth } = useSelector(
     (state) => state.expensesReducer
   );
   const dispatch = useDispatch();
+
+  const [currentDate, setCurrentDate] = useState(new Date(Date.now()))
 
   const [isNewExpModalOpen, setIsNewExpModalOpen] = useState(false);
   const [newExpSum, setNewExpSum] = useState(null);
@@ -54,7 +57,7 @@ export function Expenses() {
   useEffect(() => {
     (async () => {
       if (user) {
-        let month = parseDatetoMonthYearString(new Date(Date.now()));
+        let month = parseDatetoMonthYearString(currentDate);
         dispatch(setExpensesMonth(month));
 
         const expensesRef = ref(database, "expenses/" + user.uid + "/" + month);
@@ -76,7 +79,7 @@ export function Expenses() {
         });
       }
     })();
-  }, [user]);
+  }, [user, currentDate]);
 
   async function addNewExpense() {
     if (!newExpDate || !newExpCategory || !newExpSum) {
@@ -141,6 +144,7 @@ export function Expenses() {
 
   return (
     <SafeAreaView style={styles.screen}>
+      <MonthYearPicker date={currentDate} onDateChanged={setCurrentDate}/>
       <EntriesList dataList={expensesList} updateEntry={updateExpense} deleteEntry={deleteExpense} />
       <View style={styles.bottomArea}>
         <TouchableOpacity
