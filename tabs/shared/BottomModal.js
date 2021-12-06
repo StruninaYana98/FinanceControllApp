@@ -78,7 +78,7 @@ export function BottomModal({ heightRange, isOpen, onCloseModal, children }) {
             styles.modalContainer,
           ]}
         >
-          <View style={{ width: "100%", height: "100%", padding: 30 }}>
+          <View style={{ width: "100%", height: "100%", padding: 30}}>
             {children}
           </View>
         </Animated.View>
@@ -88,9 +88,12 @@ export function BottomModal({ heightRange, isOpen, onCloseModal, children }) {
 }
 const styles = StyleSheet.create({
   modalContainer: {
+    display:"flex",
+    alignItems:"center",
+    justifyContent:"center",
     borderTopLeftRadius: 40,
     borderTopEndRadius: 40,
-    backgroundColor: Colors.dark,
+    backgroundColor: Colors.accent,
     shadowColor: Colors.prime_dark,
     shadowOffset: {
       width: 20,
@@ -98,6 +101,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 1,
     shadowRadius: 30,
-    elevation: 100,
+    elevation: 20,
   },
 });

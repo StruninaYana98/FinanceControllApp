@@ -36,14 +36,13 @@ export function EntriesList({ dataList, updateEntry, deleteEntry }) {
       outputRange: [0, 110],
     });
     const opacity = animationState.interpolate({
-        inputRange: [0, 1],
-        outputRange: [0, 1],
-      });
-    const listItemBorderColor = 
-    animationState.interpolate({
-        inputRange: [0, 1],
-        outputRange: [Colors.dark, Colors.prime_dark],
-      });
+      inputRange: [0, 1],
+      outputRange: [0, 1],
+    });
+    const listItemBackgroundColor = animationState.interpolate({
+      inputRange: [0, 1],
+      outputRange: [Colors.overlay, Colors.base_second],
+    });
     async function toggleEditMode() {
       setEditMode(!editMode);
     }
@@ -63,12 +62,21 @@ export function EntriesList({ dataList, updateEntry, deleteEntry }) {
         style={{
           marginBottom: item.index == 1 ? 70 : 0,
           marginTop: item.index == dataList.length ? 20 : 0,
+          shadowColor: Colors.base_second,
+          shadowOffset: {
+            width: 0,
+            height: 12,
+          },
+          shadowOpacity: 0.58,
+          shadowRadius: 16.0,
+
+          elevation: 17,
         }}
       >
         <Animated.View
           style={[
             styles.listItem,
-            { borderColor: listItemBorderColor},
+            { backgroundColor: listItemBackgroundColor },
           ]}
         >
           <TouchableOpacity
@@ -88,7 +96,13 @@ export function EntriesList({ dataList, updateEntry, deleteEntry }) {
             <View style={{ flexGrow: 1 }}>
               <Text style={styles.entryCategory}>{item.category?.name}</Text>
               <Text style={styles.entryDate}>{item.date}</Text>
-              < Animated.View style={{ height: boxHeight, overflow: "hidden" , opacity:opacity}}>
+              <Animated.View
+                style={{
+                  height: boxHeight,
+                  overflow: "hidden",
+                  opacity: opacity,
+                }}
+              >
                 <TextInput
                   style={styles.sumInput}
                   keyboardType="number-pad"
@@ -112,8 +126,7 @@ export function EntriesList({ dataList, updateEntry, deleteEntry }) {
                         });
                     }}
                   >
-                    <Text style={{ color: Colors.accent, fontSize: 18 }}>
-                      {" "}
+                    <Text style={{ color: Colors.contrast, fontSize: 16 }}>
                       Delete
                     </Text>
                   </TouchableOpacity>
@@ -127,7 +140,10 @@ export function EntriesList({ dataList, updateEntry, deleteEntry }) {
                         });
                     }}
                   >
-                    <Text style={{ color: "#fff", fontSize: 18 }}> Update</Text>
+                    <Text style={{ color: Colors.prime_dark, fontSize: 16 }}>
+                      {" "}
+                      Update
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </Animated.View>
@@ -168,28 +184,30 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     padding: 15,
     borderRadius: 20,
-    borderWidth: 1,
-    marginBottom:10
+    marginBottom: 10,
+    backgroundColor: Colors.overlay,
   },
   entryDate: {
-    color: Colors.prime_dark,
-    fontSize: 15,
+    color: Colors.base_text_second,
+    fontSize: 14,
     marginRight: 20,
   },
   entryCategory: {
-    color: "#fff",
-    fontSize: 20,
+    color: Colors.base_text,
+    fontSize: 16,
     fontWeight: "600",
+    marginBottom: 10,
   },
   entryInfo: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
     flexGrow: 1,
   },
   entrySum: {
-    color: Colors.accent,
-    fontSize: 24,
+    color: Colors.contrast,
+    fontSize: 20,
     fontWeight: "800",
   },
   dataList: {
@@ -202,18 +220,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
-    color: "#fff",
-    borderWidth: 1,
-    borderColor: Colors.prime_dark,
     marginRight: 15,
+    backgroundColor: Colors.overlay,
   },
   functionalIcon: {
     width: 20,
     height: 20,
-    color: Colors.prime_light,
+    color: Colors.base_text_second,
   },
   sumInput: {
-    backgroundColor: Colors.overlay,
+    backgroundColor: Colors.prime_light,
     color: "#fff",
     fontSize: 20,
     paddingTop: 10,

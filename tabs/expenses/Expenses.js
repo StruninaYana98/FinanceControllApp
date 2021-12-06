@@ -21,7 +21,15 @@ import {
   ScrollView,
   ImageBackground,
 } from "react-native";
-import { ref, onValue, push, child, update, set , remove} from "firebase/database";
+import {
+  ref,
+  onValue,
+  push,
+  child,
+  update,
+  set,
+  remove,
+} from "firebase/database";
 import { database } from "../../App";
 import { useSelector } from "react-redux";
 import { Colors } from "../../theme/colors";
@@ -38,6 +46,7 @@ import {
 } from "../../store/slices/expensesSlice";
 import { parseDatetoMonthYearString } from "../../parsers/MonthParser";
 import { MonthYearPicker } from "../shared/MonthYearPicker";
+import { baseStyles } from "../../theme/baseStyles";
 
 export function Expenses() {
   const { expensesList, expensesMonth } = useSelector(
@@ -45,7 +54,7 @@ export function Expenses() {
   );
   const dispatch = useDispatch();
 
-  const [currentDate, setCurrentDate] = useState(new Date(Date.now()))
+  const [currentDate, setCurrentDate] = useState(new Date(Date.now()));
 
   const [isNewExpModalOpen, setIsNewExpModalOpen] = useState(false);
   const [newExpSum, setNewExpSum] = useState(null);
@@ -124,16 +133,15 @@ export function Expenses() {
       item.key]: updatedExp,
     };
 
-   return update(ref(database), updates)
+    return update(ref(database), updates);
   }
 
   async function deleteExpense(item) {
     const expenseRef = ref(
       database,
-      "expenses/" + user.uid + "/" + expensesMonth  +"/" + item.key
+      "expenses/" + user.uid + "/" + expensesMonth + "/" + item.key
     );
     return remove(expenseRef);
-
   }
 
   function clearNewExpenseEntry() {
@@ -142,23 +150,45 @@ export function Expenses() {
     setNewExpSum(null);
   }
 
-  function changePeriod(date){
-     setCurrentDate(date)
-     setNewExpDate(date)
+  function changePeriod(date) {
+    setCurrentDate(date);
+    setNewExpDate(date);
   }
 
   return (
     <SafeAreaView style={styles.screen}>
-      <MonthYearPicker date={currentDate} onDateChanged={changePeriod}/>
-      <EntriesList dataList={expensesList} updateEntry={updateExpense} deleteEntry={deleteExpense} />
+      <MonthYearPicker date={currentDate} onDateChanged={changePeriod} />
+      <EntriesList
+        dataList={expensesList}
+        updateEntry={updateExpense}
+        deleteEntry={deleteExpense}
+      />
       <View style={styles.bottomArea}>
+        <View
+          style={{
+            position: "absolute",
+            backgroundColor: Colors.overlay,
+            height: 50,
+            left: 0,
+            right: 0,
+            bottom: 0,
+          }}
+        ></View>
         <TouchableOpacity
-          style={styles.addButton}
+          style={[
+            { backgroundColor: Colors.accent, padding: 20, borderRadius: 30 },
+            styles.addButton,
+          ]}
           onPress={(e) => {
             setIsNewExpModalOpen(true);
           }}
         >
-          <AddIcon style={styles.addIcon}></AddIcon>
+          <AddIcon
+            style={[
+              baseStyles.accentButtonContent,
+              { width: 20, height: 20,},
+            ]}
+          ></AddIcon>
         </TouchableOpacity>
       </View>
 
@@ -172,15 +202,16 @@ export function Expenses() {
             display: "flex",
             flexDirection: "row",
             justifyContent: "flex-end",
+            backgroundColor:"transparent"
           }}
         >
           <TouchableOpacity
-            style={[styles.navigationButton, { marginRight: 0 }]}
+            style={[baseStyles.navigationButton, { marginRight: 0 }]}
             onPress={() => {
               setIsNewExpModalOpen(false);
             }}
           >
-            <CloseIcon style={styles.navigationIcon}></CloseIcon>
+            <CloseIcon style={baseStyles.navigationContentSecond}></CloseIcon>
           </TouchableOpacity>
         </View>
         <NewEntry
@@ -194,6 +225,7 @@ export function Expenses() {
         <TouchableOpacity
           disabled={!newExpDate || !newExpCategory || !newExpSum}
           style={[
+            baseStyles.buttonInverted,
             styles.addButton,
             {
               width: "100%",
@@ -204,7 +236,7 @@ export function Expenses() {
           ]}
           onPress={addNewExpense}
         >
-          <Text>Add Expense</Text>
+          <Text style={[baseStyles.buttonInvertedContent]}>Add Expense</Text>
         </TouchableOpacity>
       </BottomModal>
     </SafeAreaView>
@@ -213,7 +245,7 @@ export function Expenses() {
 
 const styles = StyleSheet.create({
   screen: {
-    backgroundColor: Colors.dark,
+    backgroundColor: Colors.base,
     flex: 1,
   },
   listItem: {
@@ -264,17 +296,18 @@ const styles = StyleSheet.create({
     color: Colors.prime_light,
   },
   addButton: {
-    padding: 20,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    color: "#fff",
-    backgroundColor: Colors.accent,
-
     position: "absolute",
     bottom: 10,
     zIndex: 1,
-    borderRadius: 15,
+    shadowColor: "black",
+    shadowOffset: {
+      width: 0,
+      height: 12,
+    },
+    shadowOpacity: 0.58,
+    shadowRadius: 16.0,
+
+    elevation: 24,
   },
   addIcon: {
     width: 20,

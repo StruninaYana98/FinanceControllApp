@@ -1,8 +1,14 @@
 export const Colors = {
     dark:"#080B0A",
-    prime_light:"#5B9A93",
-    prime_medium:"#2E645F",
-    prime_dark:"#40534D",
-    accent:"#BE3726",
-    overlay:"rgba(232, 232, 232, 0.1)",
+    prime_light:"#A6A3F0",
+    prime_medium:"#5F5EE7",
+    prime_dark:"#3538D9",
+    contrast:"#A04E7C",
+    accent:"#354983",
+    overlay:"rgba(255, 255, 255, 0.3)",
+    base: "rgba(208, 207, 245, 0.6)",
+    base_second:"#fff",
+    base_text:"#262A47",
+    base_text_second:"gray"
+
 }

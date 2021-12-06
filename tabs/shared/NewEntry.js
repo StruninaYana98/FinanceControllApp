@@ -23,6 +23,7 @@ import {
 } from "react-native";
 import CalendarIcon from "../../assets/svg/calendar.svg";
 import { parseToFullDateString } from "../../parsers/FullDateParser";
+import { baseStyles } from "../../theme/baseStyles";
 import { Colors } from "../../theme/colors";
 import { DatePicker } from "./DatePicker";
 import { Categories } from "./Сategories";
@@ -44,10 +45,10 @@ export function NewEntry({newDate, setNewDate, newCategory, setNewCategory, newS
           {parseToFullDateString(newDate)}
         </Text>
         <TouchableOpacity
-          style={styles.navigationButton}
+          style={baseStyles.navigationButton}
           onPress={() => setDatePickerOpen(true)}
         >
-          <CalendarIcon style={styles.navigationIcon}></CalendarIcon>
+          <CalendarIcon style={baseStyles.navigationContentSecond}></CalendarIcon>
         </TouchableOpacity>
       </View>
       <DatePicker
@@ -92,18 +93,5 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     marginRight: 15,
-  },
-  navigationButton: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 10,
-    borderRadius: 10,
-    backgroundColor: Colors.overlay,
-  },
-  navigationIcon: {
-    color: "#fff",
-    width: 20,
-    height: 20,
-  },
+  }
 });

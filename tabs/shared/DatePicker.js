@@ -11,6 +11,7 @@ import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { Colors } from "../../theme/colors";
 import CloseIcon from "../../assets/svg/close.svg";
 import { getMonthName } from "../../parsers/MonthParser";
+import { baseStyles } from "../../theme/baseStyles";
 
 export function DatePicker({ date, isOpen, onCloseCalendar, onDateChanged }) {
   const [daysList, setDaysList] = useState([]);
@@ -92,6 +93,7 @@ export function DatePicker({ date, isOpen, onCloseCalendar, onDateChanged }) {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          backgroundColor:Colors.overlay
         }}
       >
         <View
@@ -101,11 +103,11 @@ export function DatePicker({ date, isOpen, onCloseCalendar, onDateChanged }) {
           <TouchableOpacity
             onPress={onCloseCalendar}
             style={[
-              styles.navigationButton,
+              baseStyles.navigationButton,
               { position: "absolute", right: 10, top: 10 },
             ]}
           >
-            <CloseIcon style={styles.navigationIcon}></CloseIcon>
+            <CloseIcon style={baseStyles.navigationContentSecond}></CloseIcon>
           </TouchableOpacity>
           <View>
             <Text style={styles.month}>{getMonthName(date)}</Text>
@@ -114,7 +116,7 @@ export function DatePicker({ date, isOpen, onCloseCalendar, onDateChanged }) {
             style={[
               styles.row,
               {
-                borderBottomColor: Colors.prime_medium,
+                borderBottomColor: Colors.base_second,
                 borderBottomWidth: 1,
                 marginBottom: 2,
               },
@@ -144,6 +146,15 @@ const styles = StyleSheet.create({
     marginRight: 20,
     borderRadius: 20,
     padding: 10,
+    shadowColor: 'black',
+    shadowOffset: {
+      width: 0,
+      height: 12,
+    },
+    shadowOpacity: 0.58,
+    shadowRadius: 16.0,
+
+    elevation: 24,
   },
   row: {
     display: "flex",
@@ -158,7 +169,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: "14%",
-    borderRadius: 8,
+    borderRadius: 20,
   },
   month: {
     color: "#fff",
@@ -166,18 +177,5 @@ const styles = StyleSheet.create({
     padding: 10,
     marginRight: 40,
     marginLeft: 40,
-  },
-  navigationButton: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 10,
-    borderRadius: 10,
-    backgroundColor: Colors.overlay,
-  },
-  navigationIcon: {
-    color: "#fff",
-    width: 20,
-    height: 20,
-  },
+  }
 });
