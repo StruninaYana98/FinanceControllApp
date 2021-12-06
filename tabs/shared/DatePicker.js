@@ -21,7 +21,7 @@ export function DatePicker({ date, isOpen, onCloseCalendar, onDateChanged }) {
       let d = new Date(date.getFullYear(), date.getMonth(), 1);
       let days = [];
       while (d.getMonth() === date.getMonth()) {
-        days.push({ date: new Date(d), day: d.getDay() });
+        days.push({ date: new Date(d), day: d.getDay()==0? 7 : d.getDay()});
         d.setDate(d.getDate() + 1);
       }
       setDaysList(days);
