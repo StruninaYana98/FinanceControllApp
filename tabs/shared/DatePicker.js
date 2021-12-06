@@ -10,6 +10,7 @@ import {
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { Colors } from "../../theme/colors";
 import CloseIcon from "../../assets/svg/close.svg";
+import { getMonthName } from "../../parsers/MonthParser";
 
 export function DatePicker({ date, isOpen, onCloseCalendar, onDateChanged }) {
   const [daysList, setDaysList] = useState([]);
@@ -29,7 +30,7 @@ export function DatePicker({ date, isOpen, onCloseCalendar, onDateChanged }) {
 
   function getRows() {
     let totalDays = [];
-    let lastMonthDaysCount = daysList[0].day;
+    let lastMonthDaysCount = daysList[0].day - 1;
     for (let i = 0; i < lastMonthDaysCount; i++) {
       totalDays.push(<View style={styles.cell}></View>);
     }
@@ -55,8 +56,8 @@ export function DatePicker({ date, isOpen, onCloseCalendar, onDateChanged }) {
       );
     });
     let nexMonthDays =
-      daysList[daysList.length - 1].day < 6
-        ? 6 - daysList[daysList.length - 1].day
+      daysList[daysList.length - 1].day < 7
+        ? 7 - daysList[daysList.length - 1].day
         : 0;
     for (let i = 0; i < nexMonthDays; i++) {
       totalDays.push(<View style={styles.cell}></View>);
@@ -107,7 +108,7 @@ export function DatePicker({ date, isOpen, onCloseCalendar, onDateChanged }) {
             <CloseIcon style={styles.navigationIcon}></CloseIcon>
           </TouchableOpacity>
           <View>
-            <Text style={styles.month}>December</Text>
+            <Text style={styles.month}>{getMonthName(date)}</Text>
           </View>
           <View
             style={[

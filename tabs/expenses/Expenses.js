@@ -142,9 +142,14 @@ export function Expenses() {
     setNewExpSum(null);
   }
 
+  function changePeriod(date){
+     setCurrentDate(date)
+     setNewExpDate(date)
+  }
+
   return (
     <SafeAreaView style={styles.screen}>
-      <MonthYearPicker date={currentDate} onDateChanged={setCurrentDate}/>
+      <MonthYearPicker date={currentDate} onDateChanged={changePeriod}/>
       <EntriesList dataList={expensesList} updateEntry={updateExpense} deleteEntry={deleteExpense} />
       <View style={styles.bottomArea}>
         <TouchableOpacity
