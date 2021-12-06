@@ -62,7 +62,7 @@ export function EntriesList({ dataList, updateEntry, deleteEntry }) {
       <View
         style={{
           marginBottom: item.index == 1 ? 70 : 0,
-          marginTop: item.index == dataList.length ? 70 : 0,
+          marginTop: item.index == dataList.length ? 20 : 0,
         }}
       >
         <Animated.View

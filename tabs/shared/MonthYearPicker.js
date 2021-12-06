@@ -28,24 +28,74 @@ import NextIcon from "../../assets/svg/next.svg";
 
 export function MonthYearPicker({ date, onDateChanged }) {
   const [currentDate, setCurrentDate] = useState(date);
-  function MonthItem({ item }) {
-    return (
-      <View>
-        <Text style={{ color: "#fff" }}>{item.name}</Text>
-      </View>
-    );
-  }
+  const [yearInputValue, setYearInputValue] = useState(
+    String(date.getFullYear())
+  );
+  const [isMonthsOpen, setMonthsOpen] = useState(false);
+  const monthsHeightValue = useRef(new Animated.Value(0)).current;
+  const monthsHeight = monthsHeightValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 200],
+  });
+
+  useEffect(() => {
+    let toValue = 0;
+    if (isMonthsOpen) {
+      toValue = 1;
+    }
+    Animated.timing(monthsHeightValue, {
+      toValue: toValue,
+      duration: 500,
+      delay: 20,
+      useNativeDriver: false,
+    }).start();
+  }, [isMonthsOpen]);
 
   function goBack() {
     let newDate = new Date(currentDate.setMonth(currentDate.getMonth() - 1));
+    setYearInputValue(String(newDate.getFullYear()));
     setCurrentDate(newDate);
     onDateChanged(newDate);
   }
 
   function goForward() {
     let newDate = new Date(currentDate.setMonth(currentDate.getMonth() + 1));
+    setYearInputValue(String(newDate.getFullYear()));
     setCurrentDate(newDate);
     onDateChanged(newDate);
+  }
+
+  function setMonth(item) {
+    let newDate = new Date(currentDate.setMonth(item.id));
+    setYearInputValue(String(newDate.getFullYear()));
+    setCurrentDate(newDate);
+    onDateChanged(newDate);
+    setMonthsOpen(false);
+  }
+
+  function setYear() {
+    let year = Number(yearInputValue);
+
+    let newDate = year ? new Date(currentDate.setYear(year)) : null;
+    if (newDate) {
+      setYearInputValue(String(newDate.getFullYear()));
+      setCurrentDate(newDate);
+      onDateChanged(newDate);
+    }
+  }
+
+  function MonthItem({ item }) {
+    return (
+      <TouchableOpacity style={styles.monthItem} onPress={() => setMonth(item)}>
+        <Text
+          style={{
+            color: item.id == currentDate.getMonth() ? "#fff" : Colors.dark,
+          }}
+        >
+          {item.name}
+        </Text>
+      </TouchableOpacity>
+    );
   }
 
   return (
@@ -55,19 +105,38 @@ export function MonthYearPicker({ date, onDateChanged }) {
       </TouchableOpacity>
       <View style={{ display: "flex", flexDirection: "row" }}>
         <View>
-          <TouchableOpacity style={styles.pickerButton}>
+          <TouchableOpacity
+            style={[styles.pickerButton, { minWidth: 100 }]}
+            onPress={() => setMonthsOpen(!isMonthsOpen)}
+          >
             <Text style={{ color: "#fff" }}>{getMonthName(currentDate)}</Text>
           </TouchableOpacity>
-          <FlatList
-            style={{ display: "none" }}
-            data={monthsList}
-            renderItem={({ item }) => <MonthItem item={item} />}
-          />
+          <Animated.View
+            style={{
+              height: monthsHeight,
+              position: "absolute",
+              zIndex: 1,
+              top: 50,
+              width: "100%",
+            }}
+          >
+            <FlatList
+              style={styles.monthsList}
+              data={monthsList}
+              renderItem={({ item }) => <MonthItem item={item} />}
+            />
+          </Animated.View>
         </View>
         <View>
-          <TouchableOpacity style={styles.pickerButton}>
-            <Text style={{ color: "#fff" }}>{currentDate.getFullYear()}</Text>
-          </TouchableOpacity>
+          <View style={styles.pickerButton}>
+            <TextInput
+              style={{ color: "#fff", height: 21 }}
+              keyboardType="number-pad"
+              value={yearInputValue}
+              onChangeText={setYearInputValue}
+              onBlur={setYear}
+            />
+          </View>
         </View>
       </View>
       <TouchableOpacity style={styles.navButton} onPress={goForward}>
@@ -93,6 +162,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginLeft: 3,
     marginRight: 3,
+    display: "flex",
+    alignItems: "center",
   },
   navButton: {
     padding: 10,
@@ -101,5 +172,17 @@ const styles = StyleSheet.create({
     color: "#fff",
     width: 20,
     height: 20,
+  },
+  monthsList: {
+    flex: 1,
+    borderRadius: 20,
+    backgroundColor: Colors.prime_light,
+    minWidth: 100,
+  },
+  monthItem: {
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 15,
+    paddingRight: 15,
   },
 });
