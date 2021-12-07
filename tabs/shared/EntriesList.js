@@ -20,10 +20,13 @@ import {
   TextInput,
   ScrollView,
   ImageBackground,
+  SectionList,
+  ActivityIndicator
 } from "react-native";
 import { Colors } from "../../theme/colors";
 import EditIcon from "../../assets/svg/edit.svg";
 import CloseIcon from "../../assets/svg/close.svg";
+import { baseStyles } from "../../theme/baseStyles";
 
 export function EntriesList({ dataList, updateEntry, deleteEntry }) {
   function ListItem({ item }) {
@@ -60,8 +63,7 @@ export function EntriesList({ dataList, updateEntry, deleteEntry }) {
     return (
       <View
         style={{
-          marginBottom: item.index == 1 ? 70 : 0,
-          marginTop: item.index == dataList.length ? 20 : 0,
+         
           shadowColor: Colors.base_second,
           shadowOffset: {
             width: 0,
@@ -81,15 +83,15 @@ export function EntriesList({ dataList, updateEntry, deleteEntry }) {
         >
           <TouchableOpacity
             style={[
-              styles.functionalButton,
-              { borderColor: !editMode ? Colors.prime_dark : Colors.dark },
+              baseStyles.navigationButton,
+              {marginRight:10}
             ]}
             onPress={toggleEditMode}
           >
             {editMode ? (
-              <CloseIcon style={styles.functionalIcon} />
+              <CloseIcon style={baseStyles.navigationContent} />
             ) : (
-              <EditIcon style={styles.functionalIcon} />
+              <EditIcon style={baseStyles.navigationContent} />
             )}
           </TouchableOpacity>
           <View style={styles.entryInfo}>
@@ -159,13 +161,52 @@ export function EntriesList({ dataList, updateEntry, deleteEntry }) {
     );
   }
 
+  const [sectionDataList, setSectionDataList] = useState([])
+
+
+  useEffect(()=>{
+    if(dataList){
+    let dates = [];
+    dataList.forEach(item => {
+         if(!dates.includes(item.date)){
+           dates.push(item.date);
+         }
+    });
+    
+      dates.sort((date1, date2)=> {
+          d1 = date1.split('.')[0];
+          d2 = date2.split('.')[0];
+          return Number(d2) - Number(d1)
+      })
+       
+      let sectionDataList = []
+      dates.forEach(date=>{
+        sectionDataList.push({
+          title: date,
+          data: dataList.filter(item=>item.date===date).reverse()
+        })
+      })
+
+      setSectionDataList(sectionDataList)
+    }
+    
+    
+
+  }, [dataList])
+
   return (
     <View style={{ flex: 1 }}>
-      {dataList && dataList.length > 0 ? (
-        <FlatList
+      {dataList ? dataList.length > 0 ? (
+        <SectionList
+          sections={sectionDataList}
           inverted={true}
-          data={dataList}
+          keyExtractor={(item, index) => item + index}
           renderItem={({ item }) => <ListItem item={item} />}
+          renderSectionHeader={({ section: { title } }) => (
+            <View style={{marginBottom:30}}><Text style={{padding:10, color:Colors.accent}}>{title}</Text></View>
+          )}
+          ListHeaderComponent={()=><View style={{height:40}}></View>}
+          ListFooterComponent={()=><View style={{height:40}}></View>}
           style={styles.dataList}
         />
       ) : (
@@ -174,7 +215,7 @@ export function EntriesList({ dataList, updateEntry, deleteEntry }) {
         >
           <Text style={{ color: Colors.prime_medium }}>No entries</Text>
         </View>
-      )}
+      ): <ActivityIndicator/>}
     </View>
   );
 }

@@ -66,6 +66,7 @@ export function Expenses() {
   useEffect(() => {
     (async () => {
       if (user) {
+        
         let month = parseDatetoMonthYearString(currentDate);
         dispatch(setExpensesMonth(month));
 
@@ -80,7 +81,6 @@ export function Expenses() {
           expList.forEach((item, index) => {
             item.index = index + 1;
           });
-          console.log(expList);
 
           dispatch(setExpensesList(expList));
         }).catch((error) => {
@@ -107,12 +107,9 @@ export function Expenses() {
     );
     const newExpensesRef = push(expensesListRef);
 
-    set(newExpensesRef, newExpense)
-      .then(() => {
-        setIsNewExpModalOpen(false);
-        clearNewExpenseEntry();
-      })
-      .catch((error) => {
+    setIsNewExpModalOpen(false);
+    clearNewExpenseEntry();
+    await set(newExpensesRef, newExpense).catch((error) => {
         alert(error.message);
       });
   }
