@@ -30,7 +30,6 @@ export function BottomModal({ heightRange, isOpen, onCloseModal, children }) {
 
   useEffect(() => {
     (async () => {
-      console.log(isOpen);
       let toValue = 0;
       if (isOpen) {
         toValue = 1;
@@ -39,7 +38,7 @@ export function BottomModal({ heightRange, isOpen, onCloseModal, children }) {
       Animated.timing(modalHeightValue, {
         toValue: toValue,
         duration: 500,
-        delay: 20,
+        delay: 5,
 
         useNativeDriver: false,
       }).start(() => {

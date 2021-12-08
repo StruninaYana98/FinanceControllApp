@@ -32,6 +32,7 @@ export function EntriesList({ dataList, updateEntry, deleteEntry }) {
   function ListItem({ item }) {
     const [editMode, setEditMode] = useState(false);
     const [updatedSum, setUpdatedSum] = useState(item.sum);
+    const [isSumVisible, setIsSumVisible] =useState(true)
     const animationState = useRef(new Animated.Value(0)).current;
 
     const boxHeight = animationState.interpolate({
@@ -53,12 +54,15 @@ export function EntriesList({ dataList, updateEntry, deleteEntry }) {
       let toValue = 0;
       if (editMode) {
         toValue = 1;
+        setIsSumVisible(false)
       }
       Animated.timing(animationState, {
         toValue: toValue,
         duration: 500,
         useNativeDriver: false,
-      }).start();
+      }).start(()=>{if( !editMode){
+        setIsSumVisible(true)
+      }});
     }, [editMode]);
     return (
       <View
@@ -121,11 +125,8 @@ export function EntriesList({ dataList, updateEntry, deleteEntry }) {
                   <TouchableOpacity
                     style={{ padding: 10 }}
                     onPress={async () => {
-                      await deleteEntry({ ...item })
-                        .then(() => setEditMode(false))
-                        .catch((error) => {
-                          alert(error.message);
-                        });
+                      setEditMode(false);
+                      await deleteEntry({ ...item });
                     }}
                   >
                     <Text style={{ color: Colors.contrast, fontSize: 16 }}>
@@ -135,22 +136,20 @@ export function EntriesList({ dataList, updateEntry, deleteEntry }) {
                   <TouchableOpacity
                     style={{ padding: 10 }}
                     onPress={async () => {
+                      setEditMode(false)
                       await updateEntry({ ...item, sum: updatedSum })
-                        .then(() => setEditMode(false))
-                        .catch((error) => {
-                          alert(error.message);
-                        });
+                       
                     }}
                   >
                     <Text style={{ color: Colors.prime_dark, fontSize: 16 }}>
-                      {" "}
+
                       Update
                     </Text>
                   </TouchableOpacity>
                 </View>
               </Animated.View>
             </View>
-            {editMode ? null : (
+            {!isSumVisible ? null : (
               <View>
                 <Text style={styles.entrySum}>-{item.sum}</Text>
               </View>
@@ -188,6 +187,8 @@ export function EntriesList({ dataList, updateEntry, deleteEntry }) {
       })
 
       setSectionDataList(sectionDataList)
+    }else{
+      setSectionDataList(null)
     }
     
     
@@ -196,8 +197,9 @@ export function EntriesList({ dataList, updateEntry, deleteEntry }) {
 
   return (
     <View style={{ flex: 1 }}>
-      {dataList ? dataList.length > 0 ? (
+      {dataList && dataList.length > 0 ? (
         <SectionList
+         initialNumToRender={5}
           sections={sectionDataList}
           inverted={true}
           keyExtractor={(item, index) => item + index}
@@ -215,7 +217,7 @@ export function EntriesList({ dataList, updateEntry, deleteEntry }) {
         >
           <Text style={{ color: Colors.prime_medium }}>No entries</Text>
         </View>
-      ): <ActivityIndicator/>}
+      )}
     </View>
   );
 }

@@ -77,10 +77,10 @@ export function Categories({ onCheck , checkedCategory}) {
   return (
       <ScrollView horizontal={true}>
         <View>
-          {getRows().map((row) => (
-            <View style={styles.categoriesWrapper}>
-              {row.map((item) => (
-                <CategoryItem item={item} />
+          {getRows().map((row, index) => (
+            <View style={styles.categoriesWrapper} key={index}>
+              {row.map((item, index) => (
+                <CategoryItem item={item} key={index}/>
               ))}
             </View>
           ))}

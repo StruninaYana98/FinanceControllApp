@@ -47,14 +47,16 @@ import {
 import { parseDatetoMonthYearString } from "../../parsers/MonthParser";
 import { MonthYearPicker } from "../shared/MonthYearPicker";
 import { baseStyles } from "../../theme/baseStyles";
+import { ExpencesService } from "../../services/ExpensesService";
+import { ExpensesList } from "./components/ExpensesList";
 
 export function Expenses() {
-  const { expensesList, expensesMonth } = useSelector(
+  const { expensesList, expensesMonth , isExpensesFetching} = useSelector(
     (state) => state.expensesReducer
   );
   const dispatch = useDispatch();
 
-  const [currentDate, setCurrentDate] = useState(new Date(Date.now()));
+  const [currentPeriodDate, setCurrentPeriodDate] = useState(new Date(Date.now()));
 
   const [isNewExpModalOpen, setIsNewExpModalOpen] = useState(false);
   const [newExpSum, setNewExpSum] = useState(null);
@@ -66,80 +68,30 @@ export function Expenses() {
   useEffect(() => {
     (async () => {
       if (user) {
+
+        await dispatch(ExpencesService.fetchExpenses(user.uid, currentPeriodDate))
         
-        let month = parseDatetoMonthYearString(currentDate);
-        dispatch(setExpensesMonth(month));
-
-        const expensesRef = ref(database, "expenses/" + user.uid + "/" + month);
-
-        await onValue(expensesRef, (snapshot) => {
-          let expList = [];
-          snapshot.forEach((child) => {
-            expList.push({ ...child.val(), key: child.key });
-          });
-
-          expList.forEach((item, index) => {
-            item.index = index + 1;
-          });
-
-          dispatch(setExpensesList(expList));
-        }).catch((error) => {
-          alert(error.message);
-        });
       }
     })();
-  }, [user, currentDate]);
+  }, [user]);
 
   async function addNewExpense() {
     if (!newExpDate || !newExpCategory || !newExpSum) {
       return;
     }
+    setIsNewExpModalOpen(false);
+    clearNewExpenseEntry();
 
     const newExpense = {
       date: parseToFullDateString(newExpDate),
       category: newExpCategory,
       sum: newExpSum,
     };
+   
 
-    const expensesListRef = ref(
-      database,
-      "expenses/" + user.uid + "/" + expensesMonth
-    );
-    const newExpensesRef = push(expensesListRef);
-
-    setIsNewExpModalOpen(false);
-    clearNewExpenseEntry();
-    await set(newExpensesRef, newExpense).catch((error) => {
-        alert(error.message);
-      });
+    await dispatch(ExpencesService.addNewExpense(user.uid, currentPeriodDate, newExpense));
   }
 
-  async function updateExpense(item) {
-    const updatedExp = {
-      date: item.date,
-      category: item.category,
-      sum: item.sum,
-    };
-
-    const updates = {
-      ["expenses/" +
-      user.uid +
-      "/" +
-      expensesMonth +
-      "/" +
-      item.key]: updatedExp,
-    };
-
-    return update(ref(database), updates);
-  }
-
-  async function deleteExpense(item) {
-    const expenseRef = ref(
-      database,
-      "expenses/" + user.uid + "/" + expensesMonth + "/" + item.key
-    );
-    return remove(expenseRef);
-  }
 
   function clearNewExpenseEntry() {
     setNewExpDate(new Date(Date.now()));
@@ -147,19 +99,16 @@ export function Expenses() {
     setNewExpSum(null);
   }
 
-  function changePeriod(date) {
-    setCurrentDate(date);
+  async function changePeriod(date) {
+    setCurrentPeriodDate(date);
     setNewExpDate(date);
+    await dispatch(ExpencesService.fetchExpenses(user.uid, date))
   }
 
   return (
     <SafeAreaView style={styles.screen}>
-      <MonthYearPicker date={currentDate} onDateChanged={changePeriod} />
-      <EntriesList
-        dataList={expensesList}
-        updateEntry={updateExpense}
-        deleteEntry={deleteExpense}
-      />
+      <MonthYearPicker date={currentPeriodDate} onDateChanged={changePeriod} />
+      <ExpensesList/>
       <View style={styles.bottomArea}>
         <View
           style={{
@@ -206,6 +155,7 @@ export function Expenses() {
             style={[baseStyles.navigationButton, { marginRight: 0 }]}
             onPress={() => {
               setIsNewExpModalOpen(false);
+              clearNewExpenseEntry();
             }}
           >
             <CloseIcon style={baseStyles.navigationContentSecond}></CloseIcon>
