@@ -89,7 +89,7 @@ export function MonthYearPicker({ date, onDateChanged }) {
       <TouchableOpacity style={styles.monthItem} onPress={() => setMonth(item)}>
         <Text
           style={{
-            color: item.id == currentDate.getMonth() ? "#fff" : Colors.dark,
+            color: item.id == currentDate.getMonth() ? Colors.base_second : Colors.accent,
           }}
         >
           {item.name}
@@ -109,7 +109,7 @@ export function MonthYearPicker({ date, onDateChanged }) {
             style={[styles.pickerButton, { minWidth: 100 }]}
             onPress={() => setMonthsOpen(!isMonthsOpen)}
           >
-            <Text style={{ color: "#fff" }}>{getMonthName(currentDate)}</Text>
+            <Text style={{ color: Colors.accent }}>{getMonthName(currentDate)}</Text>
           </TouchableOpacity>
           <Animated.View
             style={{
@@ -128,15 +128,15 @@ export function MonthYearPicker({ date, onDateChanged }) {
           </Animated.View>
         </View>
         <View>
-          <View style={styles.pickerButton}>
+     
             <TextInput
-              style={{ color: "#fff", height: 21 }}
+              style={[styles.pickerButton,{color: Colors.accent, height:40 }]}
               keyboardType="number-pad"
               value={yearInputValue}
               onChangeText={setYearInputValue}
               onBlur={setYear}
             />
-          </View>
+        
         </View>
       </View>
       <TouchableOpacity style={styles.navButton} onPress={goForward}>
@@ -154,28 +154,44 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   pickerButton: {
-    backgroundColor: Colors.prime_light,
+    backgroundColor: Colors.base_second,
     paddingTop: 10,
     paddingBottom: 10,
     paddingLeft: 20,
     paddingRight: 20,
-    borderRadius: 20,
+    borderRadius: 15,
     marginLeft: 3,
     marginRight: 3,
     display: "flex",
     alignItems: "center",
+    shadowColor: Colors.accent,
+    shadowOffset: {
+      width: 0,
+      height: 12,
+    },
+    shadowOpacity: 0.58,
+    shadowRadius: 16.0,
+
+    elevation: 16,
   },
   navButton: {
-    padding: 10,
+    display: "flex",
+    alignItems: "center",
+    justifyContent:"center",
+    width:40,
+    height:40,
+    backgroundColor:Colors.overlay,
+    borderRadius: 10,
   },
   navIcon: {
-    color: "#fff",
+    color: Colors.accent,
     width: 20,
     height: 20,
+    borderRadius:20,
   },
   monthsList: {
     flex: 1,
-    borderRadius: 20,
+    borderRadius: 15,
     backgroundColor: Colors.prime_light,
     minWidth: 100,
   },

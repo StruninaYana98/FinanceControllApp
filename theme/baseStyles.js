@@ -24,7 +24,7 @@ export const baseStyles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 15,
-    shadowColor: Colors.accent,
+    shadowColor: 'black',
     shadowOffset: {
       width: 0,
       height: 12,
@@ -38,14 +38,6 @@ export const baseStyles = StyleSheet.create({
     color: Colors.base_second,
     borderRadius:10,
     fontSize: 18,
-    shadowOffset: {
-      width: 0,
-      height: 12,
-    },
-    shadowColor: '#fff',
-    shadowOpacity: 0.5,
-    shadowRadius: 16.0,
-    elevation: 10,
   },
   buttonInverted:{
     backgroundColor: Colors.base_second,
@@ -78,27 +70,22 @@ export const baseStyles = StyleSheet.create({
     height:35,
     borderRadius: 10,
     backgroundColor: Colors.overlay,
+  
+
   },
   navigationContent: {
     color: Colors.base_text_second,
     width: 20,
     height: 20,
     borderRadius:10,
-    shadowColor: Colors.base_text_second,
-    backgroundColor: "transparent",
-    shadowOpacity: 0.5,
-    shadowRadius: 16.0,
-    elevation: 10,
+   
+
   },
   navigationContentSecond: {
     color: Colors.base_second,
     width: 20,
     height: 20,
     borderRadius:10,
-    shadowColor: Colors.base_second,
-    backgroundColor: "transparent",
-    shadowOpacity: 0.5,
-    shadowRadius: 16.0,
-    elevation: 10,
+   
   },
 });

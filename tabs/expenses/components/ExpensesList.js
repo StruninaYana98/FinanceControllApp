@@ -6,20 +6,7 @@ import React, {
   useRef,
 } from "react";
 import {
-  SafeAreaView,
-  Text,
-  FlatList,
   View,
-  Button,
-  StyleSheet,
-  Pressable,
-  TouchableHighlight,
-  TouchableWithoutFeedback,
-  TouchableOpacity,
-  Animated,
-  TextInput,
-  ScrollView,
-  ImageBackground,
   ActivityIndicator,
 } from "react-native";
 import { useDispatch } from "react-redux";
@@ -66,7 +53,7 @@ export function ExpensesList() {
         <View
           style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
         >
-          <ActivityIndicator size="small" color={Colors.prime_dark} />
+          <ActivityIndicator size="large" color={Colors.base_second} />
         </View>
       ) : (
         <EntriesList
