@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +8,10 @@ import { Expenses } from "./expenses/Expenses";
 import { Logout } from "./Logout";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { firebaseApp } from "../App";
+import { getHeaderTitle } from "@react-navigation/elements";
+import { View, Text, SafeAreaView, StatusBar , TouchableOpacity} from "react-native";
+import { Colors } from "../theme/colors";
+import MenuIcon from '../assets/svg/menu.svg';
 
 const Drawer = createDrawerNavigator();
 
@@ -28,7 +32,49 @@ export function AppNavigation() {
   return (
     <NavigationContainer>
       {user ? (
-        <Drawer.Navigator initialRouteName="Expenses">
+        <Drawer.Navigator
+          screenOptions={{
+            header: ({ navigation, route, options }) => {
+              const title = getHeaderTitle(options, route.name);
+
+              return (
+                <View
+                  style={{
+                    height: 80,
+                    width: "100%",
+                    backgroundColor: Colors.base,
+                    paddingTop: StatusBar.currentHeight,
+                  }}
+                >
+                  <View style={{ width: "100%", height: "100%", display:"flex", flexDirection:"row", alignItems:"center", marginLeft:20, marginRight:20}}>
+               <TouchableOpacity 
+                onPress={()=>navigation.openDrawer()}
+               style={
+                 {
+                   backgroundColor:Colors.overlay,
+                   width:40,
+                   height:40,
+                   display:"flex",
+                   alignItems:"center",
+                   justifyContent:"center",
+                   borderRadius:10
+                 }
+                
+               }>
+                 <MenuIcon style={{
+                   width:25,
+                   height:25,
+                   color:Colors.base_text
+                 }}/>
+               </TouchableOpacity>
+                    <Text style={{fontSize:20, marginLeft:30, marginRight:20, color:Colors.base_text}}>{title}</Text>
+                  </View>
+                </View>
+              );
+            },
+          }}
+          initialRouteName="Expenses"
+        >
           <Drawer.Screen
             name="Expenses"
             component={() => <Expenses user={user} />}
