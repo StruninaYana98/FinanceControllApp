@@ -25,6 +25,12 @@ import { getMonthName, monthsList } from "../../parsers/MonthParser";
 import { Colors } from "../../theme/colors";
 import BackIcon from "../../assets/svg/back.svg";
 import NextIcon from "../../assets/svg/next.svg";
+import {
+  useFonts,
+  Raleway_400Regular,
+  Raleway_500Medium,
+  Raleway_600SemiBold,
+} from "@expo-google-fonts/raleway";
 
 export function MonthYearPicker({ date, onDateChanged }) {
   const [currentDate, setCurrentDate] = useState(date);
@@ -36,6 +42,12 @@ export function MonthYearPicker({ date, onDateChanged }) {
   const monthsHeight = monthsHeightValue.interpolate({
     inputRange: [0, 1],
     outputRange: [0, 200],
+  });
+
+  let [fontsLoaded] = useFonts({
+    Raleway_400Regular,
+    Raleway_500Medium,
+    Raleway_600SemiBold,
   });
 
   useEffect(() => {
@@ -89,7 +101,11 @@ export function MonthYearPicker({ date, onDateChanged }) {
       <TouchableOpacity style={styles.monthItem} onPress={() => setMonth(item)}>
         <Text
           style={{
-            color: item.id == currentDate.getMonth() ? Colors.base_second : Colors.accent,
+            fontFamily: "Raleway_500Medium",
+            color:
+              item.id == currentDate.getMonth()
+                ? Colors.base_second
+                : Colors.accent,
           }}
         >
           {item.name}
@@ -109,7 +125,11 @@ export function MonthYearPicker({ date, onDateChanged }) {
             style={[styles.pickerButton, { minWidth: 100 }]}
             onPress={() => setMonthsOpen(!isMonthsOpen)}
           >
-            <Text style={{ color: Colors.accent }}>{getMonthName(currentDate)}</Text>
+            <Text
+              style={{ color: Colors.accent, fontFamily: "Raleway_500Medium" }}
+            >
+              {getMonthName(currentDate)}
+            </Text>
           </TouchableOpacity>
           <Animated.View
             style={{
@@ -128,15 +148,13 @@ export function MonthYearPicker({ date, onDateChanged }) {
           </Animated.View>
         </View>
         <View>
-     
-            <TextInput
-              style={[styles.pickerButton,{color: Colors.accent, height:40 }]}
-              keyboardType="number-pad"
-              value={yearInputValue}
-              onChangeText={setYearInputValue}
-              onBlur={setYear}
-            />
-        
+          <TextInput
+            style={[styles.pickerButton, { color: Colors.accent, height: 40 }]}
+            keyboardType="number-pad"
+            value={yearInputValue}
+            onChangeText={setYearInputValue}
+            onBlur={setYear}
+          />
         </View>
       </View>
       <TouchableOpacity style={styles.navButton} onPress={goForward}>
@@ -164,6 +182,7 @@ const styles = StyleSheet.create({
     marginRight: 3,
     display: "flex",
     alignItems: "center",
+    fontFamily: "Raleway_500Medium",
     shadowColor: Colors.accent,
     shadowOffset: {
       width: 0,
@@ -177,17 +196,17 @@ const styles = StyleSheet.create({
   navButton: {
     display: "flex",
     alignItems: "center",
-    justifyContent:"center",
-    width:40,
-    height:40,
-    backgroundColor:Colors.overlay,
+    justifyContent: "center",
+    width: 40,
+    height: 40,
+    backgroundColor: Colors.overlay,
     borderRadius: 10,
   },
   navIcon: {
     color: Colors.accent,
     width: 20,
     height: 20,
-    borderRadius:20,
+    borderRadius: 20,
   },
   monthsList: {
     flex: 1,

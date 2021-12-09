@@ -27,8 +27,19 @@ import { baseStyles } from "../../theme/baseStyles";
 import { Colors } from "../../theme/colors";
 import { DatePicker } from "./DatePicker";
 import { Categories } from "./Сategories";
+import {
+  useFonts,
+  Raleway_400Regular,
+  Raleway_500Medium,
+  Raleway_600SemiBold
+} from '@expo-google-fonts/raleway';
 
 export function NewEntry({newDate, setNewDate, newCategory, setNewCategory, newSum, setNewSum }) {
+  let [fontsLoaded] = useFonts({
+    Raleway_400Regular,
+    Raleway_500Medium,
+    Raleway_600SemiBold
+  });
 
     const [isDatePickerOpen, setDatePickerOpen] = useState(false);
   return (
@@ -86,6 +97,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 10,
     marginBottom: 70,
+    fontFamily:'Raleway_600SemiBold'
   },
   newDate: {
     color: "#fff",
@@ -93,5 +105,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     marginRight: 15,
+    fontFamily:'Raleway_600SemiBold'
   }
 });

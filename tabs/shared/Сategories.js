@@ -7,8 +7,20 @@ import {
   TouchableHighlight,
 } from "react-native";
 import { Colors } from "../../theme/colors";
+import {
+  useFonts,
+  Raleway_400Regular,
+  Raleway_500Medium,
+  Raleway_600SemiBold
+} from '@expo-google-fonts/raleway';
 
 export function Categories({ onCheck , checkedCategory}) {
+
+  let [fontsLoaded] = useFonts({
+    Raleway_400Regular,
+    Raleway_500Medium,
+    Raleway_600SemiBold
+  });
   const [categories, setCategories] = useState([
     {
       name: "khvehvb jfge kejryfger",
@@ -127,9 +139,11 @@ const styles = StyleSheet.create({
   categoryName: {
     color: Colors.base_second,
     fontSize: 15,
+    fontFamily:'Raleway_400Regular'
   },
   checkedCategoryName:{
     color: Colors.base_text,
     fontSize: 15,
+    fontFamily:'Raleway_400Regular'
   }
 });

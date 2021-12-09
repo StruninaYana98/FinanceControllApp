@@ -9,15 +9,29 @@ import { Logout } from "./Logout";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { firebaseApp } from "../App";
 import { getHeaderTitle } from "@react-navigation/elements";
-import { View, Text, SafeAreaView, StatusBar , TouchableOpacity} from "react-native";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  StatusBar,
+  TouchableOpacity,
+} from "react-native";
 import { Colors } from "../theme/colors";
-import MenuIcon from '../assets/svg/menu.svg';
+import MenuIcon from "../assets/svg/menu.svg";
+import {
+  useFonts,
+  Raleway_700Bold,
+} from '@expo-google-fonts/raleway';
 
 const Drawer = createDrawerNavigator();
 
 export function AppNavigation() {
   const { user } = useSelector((state) => state.userReducer);
   const dispatch = useDispatch();
+  let [fontsLoaded] = useFonts({
+    Raleway_700Bold,
+  });
+
 
   const auth = getAuth(firebaseApp);
 
@@ -46,28 +60,48 @@ export function AppNavigation() {
                     paddingTop: StatusBar.currentHeight,
                   }}
                 >
-                  <View style={{ width: "100%", height: "100%", display:"flex", flexDirection:"row", alignItems:"center", marginLeft:20, marginRight:20}}>
-               <TouchableOpacity 
-                onPress={()=>navigation.openDrawer()}
-               style={
-                 {
-                   backgroundColor:Colors.overlay,
-                   width:40,
-                   height:40,
-                   display:"flex",
-                   alignItems:"center",
-                   justifyContent:"center",
-                   borderRadius:10
-                 }
-                
-               }>
-                 <MenuIcon style={{
-                   width:25,
-                   height:25,
-                   color:Colors.base_text
-                 }}/>
-               </TouchableOpacity>
-                    <Text style={{fontSize:20, marginLeft:30, marginRight:20, color:Colors.base_text}}>{title}</Text>
+                  <View
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginLeft: 20,
+                      marginRight: 20,
+                    }}
+                  >
+                    <TouchableOpacity
+                      onPress={() => navigation.openDrawer()}
+                      style={{
+                        backgroundColor: Colors.overlay,
+                        width: 40,
+                        height: 40,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 10,
+                      }}
+                    >
+                      <MenuIcon
+                        style={{
+                          width: 25,
+                          height: 25,
+                          color: Colors.base_text,
+                        }}
+                      />
+                    </TouchableOpacity>
+                    <Text
+                      style={{
+                        fontSize: 20,
+                        marginLeft: 30,
+                        marginRight: 20,
+                        color: Colors.base_text,
+                        fontFamily: "Raleway_700Bold",
+                      }}
+                    >
+                      {title}
+                    </Text>
                   </View>
                 </View>
               );

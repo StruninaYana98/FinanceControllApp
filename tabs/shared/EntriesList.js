@@ -27,8 +27,19 @@ import { Colors } from "../../theme/colors";
 import EditIcon from "../../assets/svg/edit.svg";
 import CloseIcon from "../../assets/svg/close.svg";
 import { baseStyles } from "../../theme/baseStyles";
+import {
+  useFonts,
+  Raleway_400Regular,
+  Raleway_500Medium,
+  Raleway_600SemiBold
+} from '@expo-google-fonts/raleway';
 
 export function EntriesList({ dataList, updateEntry, deleteEntry }) {
+  let [fontsLoaded] = useFonts({
+    Raleway_400Regular,
+    Raleway_500Medium,
+    Raleway_600SemiBold
+  });
   function ListItem({ item }) {
     const [editMode, setEditMode] = useState(false);
     const [updatedSum, setUpdatedSum] = useState(item.sum);
@@ -75,7 +86,6 @@ export function EntriesList({ dataList, updateEntry, deleteEntry }) {
           },
           shadowOpacity: 0.58,
           shadowRadius: 16.0,
-
           elevation: 17,
         }}
       >
@@ -129,7 +139,7 @@ export function EntriesList({ dataList, updateEntry, deleteEntry }) {
                       await deleteEntry({ ...item });
                     }}
                   >
-                    <Text style={{ color: Colors.contrast, fontSize: 16 }}>
+                    <Text style={{ color: Colors.contrast, fontSize: 14, fontFamily:'Raleway_500Medium' }}>
                       Delete
                     </Text>
                   </TouchableOpacity>
@@ -141,7 +151,7 @@ export function EntriesList({ dataList, updateEntry, deleteEntry }) {
                        
                     }}
                   >
-                    <Text style={{ color: Colors.prime_dark, fontSize: 16 }}>
+                    <Text style={{ color: Colors.prime_dark, fontSize: 14 , fontFamily:'Raleway_500Medium'}}>
 
                       Update
                     </Text>
@@ -205,7 +215,7 @@ export function EntriesList({ dataList, updateEntry, deleteEntry }) {
           keyExtractor={(item, index) => item + index}
           renderItem={({ item }) => <ListItem item={item} />}
           renderSectionHeader={({ section: { title } }) => (
-            <View style={{marginBottom:30}}><Text style={{padding:10, color:Colors.accent}}>{title}</Text></View>
+            <View style={{marginBottom:30}}><Text style={{padding:10, color:Colors.accent, fontFamily:'Raleway_600SemiBold'}}>{title}</Text></View>
           )}
           ListHeaderComponent={()=><View style={{height:40}}></View>}
           ListFooterComponent={()=><View style={{height:40}}></View>}
@@ -233,12 +243,13 @@ const styles = StyleSheet.create({
   entryDate: {
     color: Colors.base_text_second,
     fontSize: 14,
+    fontFamily:"Raleway_400Regular",
     marginRight: 20,
   },
   entryCategory: {
     color: Colors.base_text,
     fontSize: 16,
-    fontWeight: "600",
+    fontFamily:"Raleway_400Regular",
     marginBottom: 10,
   },
   entryInfo: {
@@ -250,8 +261,9 @@ const styles = StyleSheet.create({
   },
   entrySum: {
     color: Colors.contrast,
-    fontSize: 20,
-    fontWeight: "800",
+    fontSize: 18,
+    fontFamily:'Raleway_500Medium',
+    marginLeft:10
   },
   dataList: {
     padding: 15,
@@ -274,7 +286,8 @@ const styles = StyleSheet.create({
   sumInput: {
     backgroundColor: Colors.prime_light,
     color: "#fff",
-    fontSize: 20,
+    fontFamily:'Raleway_500Medium',
+    fontSize: 18,
     paddingTop: 10,
     paddingBottom: 10,
     paddingRight: 20,

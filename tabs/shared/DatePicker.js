@@ -7,22 +7,32 @@ import {
   TouchableHighlight,
   TouchableOpacity,
 } from "react-native";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { Colors } from "../../theme/colors";
 import CloseIcon from "../../assets/svg/close.svg";
 import { getMonthName } from "../../parsers/MonthParser";
 import { baseStyles } from "../../theme/baseStyles";
+import {
+  useFonts,
+  Raleway_400Regular,
+  Raleway_500Medium,
+  Raleway_600SemiBold,
+} from "@expo-google-fonts/raleway";
 
 export function DatePicker({ date, isOpen, onCloseCalendar, onDateChanged }) {
   const [daysList, setDaysList] = useState([]);
   let weekDays = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+  let [fontsLoaded] = useFonts({
+    Raleway_400Regular,
+    Raleway_500Medium,
+    Raleway_600SemiBold,
+  });
 
   useEffect(() => {
     if (date) {
       let d = new Date(date.getFullYear(), date.getMonth(), 1);
       let days = [];
       while (d.getMonth() === date.getMonth()) {
-        days.push({ date: new Date(d), day: d.getDay()==0? 7 : d.getDay()});
+        days.push({ date: new Date(d), day: d.getDay() == 0 ? 7 : d.getDay() });
         d.setDate(d.getDate() + 1);
       }
       setDaysList(days);
@@ -52,7 +62,16 @@ export function DatePicker({ date, isOpen, onCloseCalendar, onDateChanged }) {
             onCloseCalendar();
           }}
         >
-          <Text>{day.date.getDate()}</Text>
+          <Text
+            style={{
+              fontFamily: "Raleway_400Regular",
+              fontSize: 16,
+              lineHeight: 16,
+              color: Colors.accent,
+            }}
+          >
+            {day.date.getDate()}
+          </Text>
         </TouchableHighlight>
       );
     });
@@ -93,7 +112,7 @@ export function DatePicker({ date, isOpen, onCloseCalendar, onDateChanged }) {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor:Colors.overlay
+          backgroundColor: Colors.overlay,
         }}
       >
         <View
@@ -124,7 +143,16 @@ export function DatePicker({ date, isOpen, onCloseCalendar, onDateChanged }) {
           >
             {weekDays.map((weekDay) => (
               <View style={styles.cell}>
-                <Text>{weekDay}</Text>
+                <Text
+                  style={{
+                    fontFamily: "Raleway_400Regular",
+                    fontSize: 16,
+                    lineHeight: 16,
+                    color: Colors.base_text,
+                  }}
+                >
+                  {weekDay}
+                </Text>
               </View>
             ))}
           </View>
@@ -146,7 +174,7 @@ const styles = StyleSheet.create({
     marginRight: 20,
     borderRadius: 20,
     padding: 10,
-    shadowColor: 'black',
+    shadowColor: "black",
     shadowOffset: {
       width: 0,
       height: 12,
@@ -161,15 +189,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   cell: {
-    paddingTop: 10,
-    paddingBottom: 10,
+    paddingTop: 15,
+    paddingBottom: 15,
     paddingLeft: 3,
     paddingRight: 3,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     width: "14%",
-    borderRadius: 20,
+    borderRadius: 10,
   },
   month: {
     color: "#fff",
@@ -177,5 +205,6 @@ const styles = StyleSheet.create({
     padding: 10,
     marginRight: 40,
     marginLeft: 40,
-  }
+    fontFamily: "Raleway_600SemiBold",
+  },
 });
