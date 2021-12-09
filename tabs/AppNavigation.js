@@ -21,7 +21,11 @@ import MenuIcon from "../assets/svg/menu.svg";
 import {
   useFonts,
   Raleway_700Bold,
+  Raleway_600SemiBold,
+  Raleway_400Regular,
+  Raleway_500Medium
 } from '@expo-google-fonts/raleway';
+import { Incomes } from "./incomes/Incomes";
 
 const Drawer = createDrawerNavigator();
 
@@ -30,6 +34,10 @@ export function AppNavigation() {
   const dispatch = useDispatch();
   let [fontsLoaded] = useFonts({
     Raleway_700Bold,
+    Raleway_700Bold,
+    Raleway_600SemiBold,
+    Raleway_400Regular,
+    Raleway_500Medium
   });
 
 
@@ -45,7 +53,7 @@ export function AppNavigation() {
 
   return (
     <NavigationContainer>
-      {user ? (
+      {user && fontsLoaded? (
         <Drawer.Navigator
           screenOptions={{
             header: ({ navigation, route, options }) => {
@@ -113,6 +121,7 @@ export function AppNavigation() {
             name="Expenses"
             component={() => <Expenses user={user} />}
           />
+          <Drawer.Screen name="Incomes" component={Incomes}/>
           <Drawer.Screen name="Logout" component={Logout} />
         </Drawer.Navigator>
       ) : (

@@ -27,19 +27,13 @@ import { Colors } from "../../theme/colors";
 import EditIcon from "../../assets/svg/edit.svg";
 import CloseIcon from "../../assets/svg/close.svg";
 import { baseStyles } from "../../theme/baseStyles";
-import {
-  useFonts,
-  Raleway_400Regular,
-  Raleway_500Medium,
-  Raleway_600SemiBold
-} from '@expo-google-fonts/raleway';
 
 export function EntriesList({ dataList, updateEntry, deleteEntry }) {
-  let [fontsLoaded] = useFonts({
+  /*let [fontsLoaded] = useFonts({
     Raleway_400Regular,
     Raleway_500Medium,
     Raleway_600SemiBold
-  });
+  });*/
   function ListItem({ item }) {
     const [editMode, setEditMode] = useState(false);
     const [updatedSum, setUpdatedSum] = useState(item.sum);

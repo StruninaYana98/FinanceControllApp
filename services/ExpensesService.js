@@ -88,6 +88,7 @@ export class ExpencesService {
   }
   static deleteExpense(userId, periodDate, key) {
     return async (dispatch) => {
+      dispatch(setIsExpensesFetching(true));
       const expenseRef = ref(
         database,
         "expenses/" +
