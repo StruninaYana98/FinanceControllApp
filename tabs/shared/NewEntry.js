@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     borderRadius: 10,
     marginTop: 10,
-    marginBottom: 70,
+    marginBottom: 10,
     fontFamily:'Raleway_600SemiBold'
   },
   newDate: {

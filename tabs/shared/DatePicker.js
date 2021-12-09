@@ -142,7 +142,7 @@ export function DatePicker({ date, isOpen, onCloseCalendar, onDateChanged }) {
             ]}
           >
             {weekDays.map((weekDay) => (
-              <View style={styles.cell}>
+              <View style={styles.cell} key={weekDay}>
                 <Text
                   style={{
                     fontFamily: "Raleway_400Regular",
@@ -157,7 +157,7 @@ export function DatePicker({ date, isOpen, onCloseCalendar, onDateChanged }) {
             ))}
           </View>
           {daysList && daysList.length > 0
-            ? getRows().map((row) => <View style={styles.row}>{row}</View>)
+            ? getRows().map((row, index) => <View style={styles.row} key={index}>{row}</View>)
             : null}
         </View>
       </View>

@@ -132,19 +132,20 @@ export function Expenses() {
           <AddIcon
             style={[
               baseStyles.accentButtonContent,
-              { width: 20, height: 20,},
+              { width: 20, height: 20,}
             ]}
           ></AddIcon>
         </TouchableOpacity>
       </View>
 
       <BottomModal
-        heightRange={["0%", "70%"]}
+        modalHeight={"70%"}
         isOpen={isNewExpModalOpen}
-        onCloseModal={() => setIsNewExpModalOpen(false)}
+        onCloseModal={() => {setIsNewExpModalOpen(false); clearNewExpenseEntry()}}
       >
         <View
           style={{
+            width:'100%',
             display: "flex",
             flexDirection: "row",
             justifyContent: "flex-end",
@@ -161,6 +162,7 @@ export function Expenses() {
             <CloseIcon style={baseStyles.navigationContentSecond}></CloseIcon>
           </TouchableOpacity>
         </View>
+        <View style={{flex:1, width:'100%', justifyContent:"space-between", flexDirection:"column"}}>
         <NewEntry
           newDate={newExpDate}
           setNewDate={setNewExpDate}
@@ -169,15 +171,14 @@ export function Expenses() {
           newSum={newExpSum}
           setNewSum={setNewExpSum}
         />
+        
         <TouchableOpacity
           disabled={!newExpDate || !newExpCategory || !newExpSum}
           style={[
             baseStyles.buttonInverted,
-            styles.addButton,
             {
               width: "100%",
-              marginLeft: 30,
-              marginRight: 30,
+              marginTop:30,
               opacity: !newExpDate || !newExpCategory || !newExpSum ? 0.3 : 1,
             },
           ]}
@@ -185,6 +186,7 @@ export function Expenses() {
         >
           <Text style={[baseStyles.buttonInvertedContent]}>Add Expense</Text>
         </TouchableOpacity>
+        </View>
       </BottomModal>
     </SafeAreaView>
   );

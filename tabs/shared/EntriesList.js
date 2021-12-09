@@ -215,7 +215,7 @@ export function EntriesList({ dataList, updateEntry, deleteEntry }) {
           keyExtractor={(item, index) => item + index}
           renderItem={({ item }) => <ListItem item={item} />}
           renderSectionHeader={({ section: { title } }) => (
-            <View style={{marginBottom:30}}><Text style={{padding:10, color:Colors.accent, fontFamily:'Raleway_600SemiBold'}}>{title}</Text></View>
+            <View style={{marginBottom:30}}><Text style={{padding:10, color:Colors.prime_medium, fontFamily:'Raleway_600SemiBold'}}>{title}</Text></View>
           )}
           ListHeaderComponent={()=><View style={{height:40}}></View>}
           ListFooterComponent={()=><View style={{height:40}}></View>}
