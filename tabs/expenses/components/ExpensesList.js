@@ -5,12 +5,10 @@ import React, {
   useMemo,
   useRef,
 } from "react";
-import {
-  View,
-  ActivityIndicator,
-} from "react-native";
+import { View, ActivityIndicator } from "react-native";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import { EXPENSES } from "../../../consts/Consts";
 import { ExpencesService } from "../../../services/ExpensesService";
 import { Colors } from "../../../theme/colors";
 import { EntriesList } from "../../shared/EntriesList";
@@ -57,6 +55,7 @@ export function ExpensesList() {
         </View>
       ) : (
         <EntriesList
+          type={EXPENSES}
           dataList={expensesList}
           updateEntry={updateExpense}
           deleteEntry={deleteExpense}

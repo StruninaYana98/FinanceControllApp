@@ -8,16 +8,15 @@ import React, {
 import { View, ActivityIndicator } from "react-native";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import { INCOMES } from "../../../consts/Consts";
 import { IncomesService } from "../../../services/IncomesService";
 import { Colors } from "../../../theme/colors";
 import { EntriesList } from "../../shared/EntriesList";
 
 export function IncomesList() {
-  const {
-    incomesList,
-    currentPeriodDate,
-    isIncomesFetching,
-  } = useSelector((state) => state.incomesReducer);
+  const { incomesList, currentPeriodDate, isIncomesFetching } = useSelector(
+    (state) => state.incomesReducer
+  );
   const { user } = useSelector((state) => state.userReducer);
 
   const dispatch = useDispatch();
@@ -44,7 +43,7 @@ export function IncomesList() {
       IncomesService.deleteIncome(user.uid, currentPeriodDate, item.key)
     );
   }
-  
+
   return (
     <View style={{ width: "100%", flex: 1 }}>
       {isIncomesFetching ? (
@@ -55,6 +54,7 @@ export function IncomesList() {
         </View>
       ) : (
         <EntriesList
+          type={INCOMES}
           dataList={incomesList}
           updateEntry={updateIncome}
           deleteEntry={deleteIncome}

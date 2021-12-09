@@ -21,23 +21,19 @@ import {
   ScrollView,
   ImageBackground,
   SectionList,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import { Colors } from "../../theme/colors";
 import EditIcon from "../../assets/svg/edit.svg";
 import CloseIcon from "../../assets/svg/close.svg";
 import { baseStyles } from "../../theme/baseStyles";
+import { EXPENSES, INCOMES } from "../../consts/Consts";
 
-export function EntriesList({ dataList, updateEntry, deleteEntry }) {
-  /*let [fontsLoaded] = useFonts({
-    Raleway_400Regular,
-    Raleway_500Medium,
-    Raleway_600SemiBold
-  });*/
+export function EntriesList({ dataList, updateEntry, deleteEntry, type }) {
   function ListItem({ item }) {
     const [editMode, setEditMode] = useState(false);
     const [updatedSum, setUpdatedSum] = useState(item.sum);
-    const [isSumVisible, setIsSumVisible] =useState(true)
+    const [isSumVisible, setIsSumVisible] = useState(true);
     const animationState = useRef(new Animated.Value(0)).current;
 
     const boxHeight = animationState.interpolate({
@@ -52,27 +48,31 @@ export function EntriesList({ dataList, updateEntry, deleteEntry }) {
       inputRange: [0, 1],
       outputRange: [Colors.overlay, Colors.base_second],
     });
+
     async function toggleEditMode() {
       setEditMode(!editMode);
     }
+
     useEffect(() => {
       let toValue = 0;
       if (editMode) {
         toValue = 1;
-        setIsSumVisible(false)
+        setIsSumVisible(false);
       }
       Animated.timing(animationState, {
         toValue: toValue,
         duration: 500,
         useNativeDriver: false,
-      }).start(()=>{if( !editMode){
-        setIsSumVisible(true)
-      }});
+      }).start(() => {
+        if (!editMode) {
+          setIsSumVisible(true);
+        }
+      });
     }, [editMode]);
+
     return (
       <View
         style={{
-         
           shadowColor: Colors.base_second,
           shadowOffset: {
             width: 0,
@@ -90,10 +90,7 @@ export function EntriesList({ dataList, updateEntry, deleteEntry }) {
           ]}
         >
           <TouchableOpacity
-            style={[
-              baseStyles.navigationButton,
-              {marginRight:10}
-            ]}
+            style={[baseStyles.navigationButton, { marginRight: 10 }]}
             onPress={toggleEditMode}
           >
             {editMode ? (
@@ -133,20 +130,30 @@ export function EntriesList({ dataList, updateEntry, deleteEntry }) {
                       await deleteEntry({ ...item });
                     }}
                   >
-                    <Text style={{ color: Colors.contrast, fontSize: 14, fontFamily:'Raleway_500Medium' }}>
+                    <Text
+                      style={{
+                        color: Colors.contrast,
+                        fontSize: 14,
+                        fontFamily: "Raleway_500Medium",
+                      }}
+                    >
                       Delete
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={{ padding: 10 }}
                     onPress={async () => {
-                      setEditMode(false)
-                      await updateEntry({ ...item, sum: updatedSum })
-                       
+                      setEditMode(false);
+                      await updateEntry({ ...item, sum: updatedSum });
                     }}
                   >
-                    <Text style={{ color: Colors.prime_dark, fontSize: 14 , fontFamily:'Raleway_500Medium'}}>
-
+                    <Text
+                      style={{
+                        color: Colors.prime_dark,
+                        fontSize: 14,
+                        fontFamily: "Raleway_500Medium",
+                      }}
+                    >
                       Update
                     </Text>
                   </TouchableOpacity>
@@ -155,7 +162,22 @@ export function EntriesList({ dataList, updateEntry, deleteEntry }) {
             </View>
             {!isSumVisible ? null : (
               <View>
-                <Text style={styles.entrySum}>-{item.sum}</Text>
+                <Text
+                  style={[
+                    styles.entrySum,
+                    {
+                      color:
+                        type == INCOMES
+                          ? Colors.prime_dark
+                          : type == EXPENSES
+                          ? Colors.contrast
+                          : Colors.base_text,
+                    },
+                  ]}
+                >
+                  {type == INCOMES ? "+" : type == EXPENSES ? "-" : ""}
+                  {item.sum}
+                </Text>
               </View>
             )}
           </View>
@@ -164,55 +186,61 @@ export function EntriesList({ dataList, updateEntry, deleteEntry }) {
     );
   }
 
-  const [sectionDataList, setSectionDataList] = useState([])
+  const [sectionDataList, setSectionDataList] = useState([]);
 
+  useEffect(() => {
+    if (dataList) {
+      let dates = [];
+      dataList.forEach((item) => {
+        if (!dates.includes(item.date)) {
+          dates.push(item.date);
+        }
+      });
 
-  useEffect(()=>{
-    if(dataList){
-    let dates = [];
-    dataList.forEach(item => {
-         if(!dates.includes(item.date)){
-           dates.push(item.date);
-         }
-    });
-    
-      dates.sort((date1, date2)=> {
-          d1 = date1.split('.')[0];
-          d2 = date2.split('.')[0];
-          return Number(d2) - Number(d1)
-      })
-       
-      let sectionDataList = []
-      dates.forEach(date=>{
+      dates.sort((date1, date2) => {
+        d1 = date1.split(".")[0];
+        d2 = date2.split(".")[0];
+        return Number(d2) - Number(d1);
+      });
+
+      let sectionDataList = [];
+      dates.forEach((date) => {
         sectionDataList.push({
           title: date,
-          data: dataList.filter(item=>item.date===date).reverse()
-        })
-      })
+          data: dataList.filter((item) => item.date === date).reverse(),
+        });
+      });
 
-      setSectionDataList(sectionDataList)
-    }else{
-      setSectionDataList(null)
+      setSectionDataList(sectionDataList);
+    } else {
+      setSectionDataList(null);
     }
-    
-    
-
-  }, [dataList])
+  }, [dataList]);
 
   return (
     <View style={{ flex: 1 }}>
       {dataList && dataList.length > 0 ? (
         <SectionList
-         initialNumToRender={5}
+          initialNumToRender={5}
           sections={sectionDataList}
           inverted={true}
           keyExtractor={(item, index) => item + index}
           renderItem={({ item }) => <ListItem item={item} />}
           renderSectionHeader={({ section: { title } }) => (
-            <View style={{marginBottom:30}}><Text style={{padding:10, color:Colors.prime_medium, fontFamily:'Raleway_600SemiBold'}}>{title}</Text></View>
+            <View style={{ marginBottom: 30 }}>
+              <Text
+                style={{
+                  padding: 10,
+                  color: Colors.accent,
+                  fontFamily: "Raleway_600SemiBold",
+                }}
+              >
+                {title}
+              </Text>
+            </View>
           )}
-          ListHeaderComponent={()=><View style={{height:40}}></View>}
-          ListFooterComponent={()=><View style={{height:40}}></View>}
+          ListHeaderComponent={() => <View style={{ height: 40 }}></View>}
+          ListFooterComponent={() => <View style={{ height: 40 }}></View>}
           style={styles.dataList}
         />
       ) : (
@@ -237,13 +265,13 @@ const styles = StyleSheet.create({
   entryDate: {
     color: Colors.base_text_second,
     fontSize: 14,
-    fontFamily:"Raleway_400Regular",
+    fontFamily: "Raleway_400Regular",
     marginRight: 20,
   },
   entryCategory: {
     color: Colors.base_text,
     fontSize: 16,
-    fontFamily:"Raleway_400Regular",
+    fontFamily: "Raleway_400Regular",
     marginBottom: 10,
   },
   entryInfo: {
@@ -254,10 +282,9 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   entrySum: {
-    color: Colors.contrast,
     fontSize: 18,
-    fontFamily:'Raleway_500Medium',
-    marginLeft:10
+    fontFamily: "Raleway_500Medium",
+    marginLeft: 10,
   },
   dataList: {
     padding: 15,
@@ -280,7 +307,7 @@ const styles = StyleSheet.create({
   sumInput: {
     backgroundColor: Colors.prime_light,
     color: "#fff",
-    fontFamily:'Raleway_500Medium',
+    fontFamily: "Raleway_500Medium",
     fontSize: 18,
     paddingTop: 10,
     paddingBottom: 10,
