@@ -26,6 +26,7 @@ import {
   Raleway_500Medium
 } from '@expo-google-fonts/raleway';
 import { Incomes } from "./incomes/Incomes";
+import { Statistics } from "./statistics/Statistics";
 
 const Drawer = createDrawerNavigator();
 
@@ -119,9 +120,10 @@ export function AppNavigation() {
         >
           <Drawer.Screen
             name="Expenses"
-            component={() => <Expenses user={user} />}
+            component={Expenses}
           />
           <Drawer.Screen name="Incomes" component={Incomes}/>
+          <Drawer.Screen name="Statistics" component={Statistics}/>
           <Drawer.Screen name="Logout" component={Logout} />
         </Drawer.Navigator>
       ) : (
