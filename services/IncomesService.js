@@ -13,12 +13,12 @@ export class IncomesService {
       dispatch(setCurrentPeriodDate(periodDate));
       dispatch(setIsIncomesFetching(true));
 
-      const expensesRef = child(
+      const incomesRef = child(
         ref(database),
         "incomes/" + userId + "/" + parseDatetoMonthYearString(periodDate)
       );
 
-      get(expensesRef)
+      get(incomesRef)
         .then((snapshot) => {
           let incomesList = [];
           snapshot.forEach((child) => {
