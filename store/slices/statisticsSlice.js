@@ -3,6 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   totalIncome: null,
   totalExpence: null,
+  expensesMonthsStatistic: [],
+  incomesMonthsStatistic: [],
   expensesCategoriesStatistic: [],
   incomesCategoriesStatistic: [],
   isStatisticsFetching: false,
@@ -17,6 +19,12 @@ export const statisticsSlice = createSlice({
     },
     setTotalExpence(state, action) {
       state.totalExpence = action.payload;
+    },
+    setMonthsExpensesStatistic(state, action) {
+      state.expensesMonthsStatistic = action.payload;
+    },
+    setMonthsIncomesStatistic(state, action) {
+      state.incomesMonthsStatistic = action.payload;
     },
     setIsStatisticsFetching(state, action) {
       state.isStatisticsFetching = action.payload;
@@ -36,6 +44,8 @@ export const statisticsSlice = createSlice({
 export const {
   setTotalIncome,
   setTotalExpence,
+  setMonthsExpensesStatistic,
+  setMonthsIncomesStatistic,
   setIsStatisticsFetching,
   setExpensesCategoriesStatistics,
   setIncomesCategoriesStatistics,

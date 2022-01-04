@@ -21,81 +21,71 @@ import {
   ScrollView,
   ImageBackground,
 } from "react-native";
-import { BarChart, Grid, YAxis , XAxis} from "react-native-svg-charts";
+import { BarChart, Grid, YAxis, XAxis } from "react-native-svg-charts";
 import { Colors } from "../../../theme/colors";
-import * as shape from "d3-shape";
-import * as scale from 'd3-scale'
-export function FinanceBarChart() {
-  const data1 = [
-    14,
-    -1,
-    100,
-    -95,
-    -94,
-    -24,
-    -8,
-    85,
-    -91,
-    35,
-    -53,
-    53,
-  
-  ];
-  const data2 = [
-    24,
-    28,
-    93,
-    77,
-    -42,
-    -62,
-    52,
-    -87,
-    21,
-    53,
-    -78,
-    -62,
-  
-  ];
-  const data3 = [
-    24,
-    28,
-    93,
-    77,
-    -42,
-    -62,
-    52,
-    -87,
-    21,
-    53,
-    -78,
-    -62,
-  
-  ];
 
-  const barData = [
-    {
-      data: data1.map((value) => ({ value })),
-      svg: {
-        fill: Colors.prime_medium
-      },
-    },
-    {
-      data: data2.map((value) => ({ value })),
-      svg: {
-        fill: Colors.contrast
-      },
-    },
-    {
-        data: data3.map((value) => ({ value })),
-        svg: {
-          fill: Colors.base_second
+export function FinanceBarChart({
+  incomesMonthsStatistic,
+  expensesMonthsStatistic,
+}) {
+  const [barData, setBarData] = useState([]);
+  const [yAxisData, setYAxisData] = useState([]);
+  const [yMin, setYMin] = useState(0);
+
+  useEffect(() => {
+    if (
+      incomesMonthsStatistic &&
+      expensesMonthsStatistic &&
+      incomesMonthsStatistic.length == expensesMonthsStatistic.length
+    ) {
+      const barData = [
+        {
+          data: incomesMonthsStatistic.map((value) => ({ value })),
+          svg: {
+            fill: Colors.accent,
+            opacity: "0.8",
+          },
         },
-      },
-  ];
+        {
+          data: expensesMonthsStatistic.map((value) => ({ value })),
+          svg: {
+            fill: Colors.contrast,
+            opacity: "0.8",
+          },
+        },
+        {
+          data: incomesMonthsStatistic.map((income, index) => ({
+            value: Math.round(income - expensesMonthsStatistic[index]),
+          })),
+          svg: {
+            fill: Colors.base_second,
+            opacity: "0.8",
+          },
+        },
+      ];
+
+      let yAxisData = incomesMonthsStatistic.concat(
+        expensesMonthsStatistic,
+        incomesMonthsStatistic.map((income, index) =>
+          Math.round(income - expensesMonthsStatistic[index])
+        )
+      );
+
+      setBarData(barData);
+      setYAxisData(yAxisData);
+
+      let min = yAxisData.reduce((minVal, item) => {
+        return item < minVal ? item : minVal;
+      }, 0);
+
+      setYMin(min);
+    }
+  }, [incomesMonthsStatistic, expensesMonthsStatistic]);
+
   return (
     <View
       style={{
-        height: 300,
+        height: 250,
         flexDirection: "row",
         width: "100%",
         display: "flex",
@@ -103,19 +93,16 @@ export function FinanceBarChart() {
       }}
     >
       <BarChart
-        style={{ height: 290,marginBottom:10, flexGrow: 1 }}
+        style={{ height: 240, marginBottom: 30, flexGrow: 1 }}
         data={barData}
         yAccessor={({ item }) => item.value}
-        svg={{
-          fill: "green",
-        }}
+        yMin={yMin}
       >
-        <Grid />
        
       </BarChart>
       <YAxis
         style={{ position: "absolute", top: 0, bottom: 10 }}
-        data={data1}
+        data={yAxisData}
         svg={{
           fontSize: 10,
           fill: Colors.base_text,

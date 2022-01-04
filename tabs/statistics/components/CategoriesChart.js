@@ -45,7 +45,7 @@ export function CategoriesChart({ type, categoriesStatistics, total }) {
         let data = categoriesStatistics.map((item, index) => {
           const color =
             type == INCOMES
-              ? Colors.prime_dark
+              ? Colors.accent
               : type == EXPENSES
               ? Colors.contrast
               : Colors.accent;
@@ -77,13 +77,13 @@ export function CategoriesChart({ type, categoriesStatistics, total }) {
         justifyContent: "space-between",
       }}
     >
-      {dataList.map((data, index) => (
+      {total ? dataList.map((data, index) => (
         <View style={styles.chartWrapper} key={index}>
           <View style={{ position: "relative" }}>
             <PieChart
               style={{ height: 80, width: 80, borderRadius: 80 }}
               outerRadius={"90%"}
-              innerRadius={15}
+              innerRadius={18}
               data={data}
             />
             <View
@@ -103,14 +103,14 @@ export function CategoriesChart({ type, categoriesStatistics, total }) {
                   fontFamily: "Raleway_600SemiBold",
                   fontSize: 14,
                   color: type== INCOMES
-                    ? Colors.prime_dark
+                    ? Colors.accent
                     : type == EXPENSES
                     ? Colors.contrast
                     : Colors.accent,
                   lineHeight: 14,
                 }}
               >
-                {"<1"}
+                { Math.round( categoriesStatistics[index].total / total *100)< 1 ? "<1": Math.round( categoriesStatistics[index].total / total *100)}
               </Text>
             </View>
           </View>
@@ -123,7 +123,7 @@ export function CategoriesChart({ type, categoriesStatistics, total }) {
             </Text>
           </View>
         </View>
-      ))}
+      )): null}
     </View>
   );
 }

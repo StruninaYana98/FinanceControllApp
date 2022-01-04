@@ -3,7 +3,7 @@ export const Colors = {
     prime_light:"#A6A3F0",
     prime_medium:"#5F5EE7",
     prime_dark:"#3538D9",
-    contrast:"#A04E7C",
+    contrast:"#8B2374",
     accent:"#354983",
     overlay:"rgba(255, 255, 255, 0.2)",
     base: "rgba(208, 207, 245, 0.6)",
